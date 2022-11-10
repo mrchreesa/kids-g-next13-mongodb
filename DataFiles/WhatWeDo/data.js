@@ -1,0 +1,83 @@
+/* Data that is used on What We Do Page */
+const cards = [
+    {
+      id: 1,
+      name1: 'School Structure',
+      text1:
+      'Revamp your school in a new, up-to-date style',
+      image1: 'images/university.svg',
+      link1: '/services',
+      linkText1: 'Know More',
+      height1: '45vh',
+      width1: '40vw',
+      cardId1: 1,
+      name2: 'School Marketing',
+      text2:
+      "Calibrated marketing strategies to enhance your school's recognition",
+      image2: 'images/megaphone.svg',
+      link2: '/services',
+      linkText2: 'Know More',
+      height2: '45vh',
+      width2: '40vw',
+      cardId2: 2,
+      name3: 'Event Ideation',
+      text3:
+      'Organize eye-catching events to bask-in renown',
+      image3: 'images/calendar.svg',
+      link3: '/services',
+      linkText3: 'Know More',
+      height3: '45vh',
+      width3: '40vw',
+      cardId3: 3,
+      name4: 'Education Plans',
+      text4:
+      'Design well-thought-out plans to achieve academic excellence',
+      image4: 'images/pencil.svg',
+      link4: '/services',
+      linkText4: 'Know More',
+      height4: '45vh',
+      width4: '40vw',
+      cardId4: 4,
+    },
+    {
+      id: 2,
+      name1: 'Ops Management',
+      text1:
+      'Efficient management methods for optimised organizational results',
+      image1: 'images/administration.svg',
+      link1: '/services',
+      linkText1: 'Know More',
+      height1: '45vh',
+      width1: '40vw',
+      cardId1: 5,
+      name2: 'HR Management',
+      text2:
+      'Make your workforce skilled and find efficient staff',
+      image2: 'images/human-resources.svg',
+      link2: '/services',
+      linkText2: 'Know More',
+      height2: '45vh',
+      width2: '40vw',
+      cardId2: 6,
+      name3: 'Academic Calendar',
+      text3:
+      'Create a well-designed schedule to stay aligned to your goals',
+      image3: 'images/dates.svg',
+      link3: '/services',
+      linkText3: 'Know More',
+      height3: '45vh',
+      width3: '40vw',
+      cardId3: 7,
+      name4: "Teachers' Training",
+      text4:
+      'Increase competency of teachers to mentor students more professionally',
+      image4: 'images/boss.svg',
+      link4: '/services',
+      linkText4: 'Know More',
+      height4: '45vh',
+      width4: '40vw',
+      cardId4: 8,
+    },
+  ];
+  
+  export default cards;
