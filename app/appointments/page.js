@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import ReactFullpage from "@fullpage/react-fullpage";
 import Head from "next/head";
 import Navbar from "../../Components/NavBar";
-import ContactForm from "../../Components/Contact/ContactForm";
+import AppointmentsPage from "../../Components/Contact/Appointments";
 
 // NOTE: if using fullpage extensions/plugins put them here and pass it as props.
 const pluginWrapper = () => {
@@ -12,7 +12,7 @@ const pluginWrapper = () => {
    */
 };
 
-const Contacts = () => {
+const Appointments = () => {
   const onLeave = (origin, destination, direction) => {
     console.log("onLeave", { origin, destination, direction });
     // arguments are mapped in order of fullpage.js callback arguments do something
@@ -23,12 +23,15 @@ const Contacts = () => {
     <div className="App">
       <Head>
         <title>Kids Galaxy</title>
-        <link href="/static/styles.css" rel="stylesheet" />
+        {/* <link href="/static/styles.css" rel="stylesheet" /> */}
       </Head>
       <Navbar />
-      <ContactForm />
+
+      <div className="section section0 fp-auto-height-responsive items-center">
+        <AppointmentsPage />
+      </div>
     </div>
   );
 };
 
-export default Contacts;
+export default Appointments;

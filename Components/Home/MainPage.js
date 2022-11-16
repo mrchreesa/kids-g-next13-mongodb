@@ -1,7 +1,5 @@
 import React from "react";
 import Link from "next/link";
-import Image from "next/image";
-// import { ReactComponent as LandingSvg } from "../../Assets/Images/OBJECTS.svg";
 
 const MainPage = () => {
   return (
@@ -37,7 +35,7 @@ const MainPage = () => {
         >
           <img
             src="/Assets/Images/OBJECTS.svg"
-            alt=""
+            alt="objests image"
             className="lg:h-auto w-1/2 lg:w-max mb-5"
           />
         </div>

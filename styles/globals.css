@@ -22,3 +22,27 @@ a {
 * {
   box-sizing: border-box;
 }
+.react-tel-input .form-control {
+  font-size: 16px;
+  background: #f3f3f3 !important;
+  border: 1px solid #262e42 !important;
+  border-radius: 0px !important;
+  outline: none;
+  padding: 16px 14px 16px 58px;
+  transition: none !important;
+  font-family: "Merriweather", serif;
+  width: 100% !important;
+  height: 41px !important;
+  padding: 0;
+}
+.react-tel-input .selected-flag {
+  border: none;
+  background: #f3f3f3 !important;
+  border-radius: 0px !important;
+}
+
+.react-tel-input .flag-dropdown {
+  background-color: #f3f3f3;
+  border: 1px solid #262e42 !important;
+  border-radius: 0px !important;
+}

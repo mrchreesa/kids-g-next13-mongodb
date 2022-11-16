@@ -16,9 +16,12 @@
     "heroicons": "^2.0.13",
     "next": "13.0.2",
     "react": "18.2.0",
+    "react-calendly": "^4.1.0",
     "react-dom": "18.2.0",
     "react-fullpage": "^0.1.19",
-    "react-icons": "^4.6.0"
+    "react-icons": "^4.6.0",
+    "react-modal": "^3.16.1",
+    "react-phone-input-2": "^2.15.1"
   },
   "devDependencies": {
     "@svgr/webpack": "^6.5.1",

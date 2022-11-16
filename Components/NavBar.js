@@ -11,6 +11,7 @@ const navigation = [
   { name: "Our Services", href: "/services", current: false },
   { name: "About Us", href: "/about", current: false },
   { name: "Contact Us", href: "/contacts", current: false },
+  { name: "Appointments", href: "/appointments", current: false },
 ];
 
 function classNames(...classes) {
@@ -22,7 +23,7 @@ export default function Navbar() {
     <Disclosure as="nav" className="bg-transparent  ">
       {({ open }) => (
         <>
-          <div className="mx-auto  px-2 sm:px-6 lg:px-8 container">
+          <div className="mx-auto  px-2 sm:px-6 lg:px-8 max-w-[1300px]">
             <div className="relative flex h-20 items-center justify-between ">
               <div className="flex flex-1 items-center justify-center  sm:items-stretch sm:justify-start">
                 <div className="flex  items-center ml-5">
@@ -58,7 +59,7 @@ export default function Navbar() {
                   </div>
                 </div>
                 <div className="flex grow"></div>
-                <div className="w-max flex items-center mr-5">
+                <div className="w-max hidden lg:flex items-center mr-5">
                   <Link className="m-2" href={"/contact"}>
                     <BsChatSquareDotsFill className="text-3v lg:text-2v md:max-w-[26px] md:mr-2" />
                   </Link>

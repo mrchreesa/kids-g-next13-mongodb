@@ -57,11 +57,6 @@ const Home = () => {
                   <div className="section section3 fp-auto-height-responsive items-center">
                     <MainPage />
                   </div>
-                  {/* {fullpages.map(({ text }) => (
-                    <div key={text} className="section">
-                      {text}
-                    </div>
-                  ))} */}
                 </ReactFullpage.Wrapper>
               </>
             );
