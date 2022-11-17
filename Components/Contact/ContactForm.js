@@ -3,6 +3,7 @@ import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import Modal from "react-modal";
 import Link from "next/link";
+import axios from "axios";
 
 import { FaFacebookSquare } from "react-icons/fa";
 import { GrInstagram } from "react-icons/gr";
@@ -38,9 +39,25 @@ const ContactForm = () => {
     if (phone.length < 7) {
       alert("Please enter a valid phone number");
     } else {
-      openModal();
-      setFormValues(initialValues);
-      setPhone("");
+      axios
+        .post("/api/contact", {
+          name: formValues.name,
+          school: formValues.school,
+          phone: phone,
+          email: formValues.email,
+          message: formValues.message,
+        })
+        .then((response) => {
+          console.log(response);
+          if (response.status === 200) {
+            console.log("Message Sent.");
+            openModal();
+            setFormValues(initialValues);
+            setPhone("");
+          } else {
+            alert("Message failed to send.");
+          }
+        });
     }
   };
 
@@ -154,6 +171,7 @@ const ContactForm = () => {
             style={customStyles}
             isOpen={isOpenModal}
             onRequestClose={closeModal}
+            ariaHideApp={false}
           >
             <h2 className="text-mont text-center text-[10vh] font-normal mt-[3vh]">
               THANK YOU!
