@@ -1,4 +1,6 @@
 import { transporter, mailOptions } from "../../lib/nodemailer";
+import connectDB from "../../lib/connectDB";
+import Form from "../../model/contactFormModel";
 
 const CONTACT_MESSAGE_FIELDS = {
   name: "Name",
@@ -26,27 +28,36 @@ const generateEmailContent = (data) => {
 };
 
 const handler = async (req, res) => {
-  //   console.log(req.body);
-  //   res.status(200).json({ message: "success" });
   if (req.method === "POST") {
     const data = req.body;
-    // if (!data || !data.name || !data.email || !data.subject || !data.message) {
-    //   return res.status(400).send({ message: "Bad request" });
-    // }
+    if (!data || !data.name || !data.email || !data.message) {
+      return res.status(400).send({ message: "Bad request" });
+    }
+    await connectDB();
+    console.log("Connected to Mongo");
 
     try {
-      await transporter.sendMail({
-        ...mailOptions,
-        ...generateEmailContent(data),
-        subject: data.subject,
-      });
+      const contact = await Form.find({ email: data.email });
+      const contactPhone = await Form.find({ phone: data.phone });
 
-      return res.status(200).json({ success: true });
-    } catch (err) {
-      console.log(err);
-      return res.status(400).json({ message: err.message });
+      if (!contact.length && !contactPhone.length) {
+        const newContact = await Form.create(data);
+        console.log("New document created", newContact);
+        await transporter.sendMail({
+          ...mailOptions,
+          ...generateEmailContent(data),
+          subject: data.subject,
+        });
+        res.status(201).json({ success: true });
+      } else {
+        console.log("Existing document found", contact, contactPhone);
+        res.status(202).json({ success: true });
+      }
+    } catch (error) {
+      console.log(error);
+      res.status(400).json({ success: false });
     }
   }
-  return res.status(400).json({ message: "Bad request" });
+  // return res.status(400).json({ message: "Bad request" });
 };
 export default handler;

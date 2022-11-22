@@ -10,11 +10,91 @@ import { GrInstagram } from "react-icons/gr";
 import { ImLinkedin } from "react-icons/im";
 
 const ContactForm = () => {
-  const [phone, setPhone] = useState("");
   const initialValues = { name: "", school: "", email: "", message: "" };
+
+  const [phone, setPhone] = useState("");
   const [formValues, setFormValues] = useState(initialValues);
   const [isOpenModal, setIsOpenModal] = useState(false);
+  const [loading, setLoading] = useState(false);
 
+  const [formName, setFormName] = useState("");
+  const [formSchool, setFormSchool] = useState("");
+  const [formPhone, setFormPhone] = useState("");
+  const [formEmail, setFormEmail] = useState("");
+  const [formMessage, setFormMessage] = useState("");
+
+  const [errorMessageName, setErrorMessageName] = useState("Error");
+  const [errorMessageSchool, setErrorMessageSchool] = useState("Error");
+  const [errorMessagePhone, setErrorMessagePhone] = useState("Error");
+  const [errorMessageEmail, setErrorMessageEmail] = useState("Error");
+  const [errorMessageMessage, setErrorMessageMessage] = useState("Error");
+
+  const [errorName, setErrorName] = useState(false);
+  const [errorSchool, setErrorSchool] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(false);
+  const [errorEmail, setErrorEmail] = useState(false);
+  const [errorPhone, setErrorPhone] = useState(false);
+
+  const isValidEmail = (email) => {
+    const re =
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+  };
+
+  const isValidName = (name) => {
+    const re = /\b([A-ZÀ-ÿ][-,a-z. ']+[ ]*)+/;
+    return re.test(String(name));
+  };
+
+  const validateInputs = () => {
+    const nameValue = formValues.name.trim();
+    const emailValue = formValues.email.trim();
+
+    if (formValues.name === "") {
+      setErrorMessageName("Name is required");
+      setErrorName(true);
+    } else if (!isValidName(nameValue)) {
+      setErrorMessageName("Name should be 3-26 characters");
+      setErrorName(true);
+    } else {
+      setErrorName(false);
+      setFormName(formValues.name);
+    }
+    if (formValues.school === "") {
+      setErrorMessageSchool("School is required");
+      setErrorSchool(true);
+    } else {
+      setFormSchool(formValues.school);
+      setErrorSchool(false);
+    }
+    if (phone === "") {
+      setErrorMessagePhone("Phone number is required");
+      setErrorPhone(true);
+    } else if (phone.length < 10) {
+      setErrorMessagePhone("Please provide a valid phone number");
+      setErrorPhone(true);
+    } else {
+      setErrorPhone(false);
+      setFormPhone(phone);
+    }
+    if (formValues.email === "") {
+      setErrorMessageEmail("Email is required");
+      setErrorEmail(true);
+    } else if (!isValidEmail(emailValue)) {
+      setErrorMessageEmail("Provide a valid email address");
+      setErrorEmail(true);
+    } else {
+      setErrorEmail(false);
+      setFormEmail(formValues.email);
+    }
+    if (formValues.message === "") {
+      setErrorMessageMessage("Message is required");
+      setErrorMessage(true);
+    } else {
+      setErrorMessage(false);
+      setFormMessage(formValues.message);
+    }
+  };
   const openModal = () => {
     setIsOpenModal(true);
   };
@@ -36,9 +116,15 @@ const ContactForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (phone.length < 7) {
-      alert("Please enter a valid phone number");
-    } else {
+    validateInputs();
+    if (
+      errorName !== true &&
+      errorSchool !== true &&
+      errorPhone !== true &&
+      errorEmail !== true &&
+      errorMessage !== true
+    ) {
+      setLoading(true);
       axios
         .post("/api/contact", {
           name: formValues.name,
@@ -48,24 +134,36 @@ const ContactForm = () => {
           message: formValues.message,
         })
         .then((response) => {
+          setLoading(false);
           console.log(response);
-          if (response.status === 200) {
+          if (response.status === 201) {
             console.log("Message Sent.");
             openModal();
             setFormValues(initialValues);
             setPhone("");
-          } else {
-            alert("Message failed to send.");
+            setFormEmail("");
+          } else if (response.status === 202) {
+            alert(
+              "You have already submitted a message with us and we will get back to you soon!"
+            );
+            setFormValues(initialValues);
+            setPhone("");
+            setFormEmail("");
           }
         });
     }
   };
+  // useEffect(() => {
+  //   console.log("Use effect ran" + errorName);
+  // }, [errorName]);
 
   const handleChange = (e) => {
     const { value, name } = e.target;
     setFormValues({ ...formValues, [name]: value });
-    console.log(formValues);
   };
+  // console.log(formValues);
+  console.log(formName, formSchool, formPhone, formEmail, formMessage);
+
   return (
     <div className=" flex flex-col-reverse lg:flex-row justify-center font-merri  items-center ">
       <div
@@ -88,83 +186,162 @@ const ContactForm = () => {
               Arrange your free <br /> initial consultation now
             </h2>
             <div className="flex">
-              <div className="form-group basis-[48%]">
-                <label for="name">Contact Person</label>
-                <input
-                  type="text"
-                  className="text-base bg-white py-3.5 px-4 w-full h-10 border border-blue outline-0 transition-none"
-                  id="name1"
-                  name="name"
-                  value={formValues.name}
-                  onChange={handleChange}
-                  placeholder="First and Last Name"
-                  required
-                />
-              </div>
-              <div className="basis-[4%]"></div>
-              <div className="form-group basis-[48%]">
-                <label for="name">School</label>
-                <input
-                  type="text"
-                  className="text-base bg-white py-3.5 px-4 w-full h-10 border border-blue outline-0 transition-none"
-                  id="school1"
-                  name="school"
-                  value={formValues.school}
-                  onChange={handleChange}
-                  placeholder="School/Organization Name"
-                  required
-                />
-              </div>
-            </div>
-            <div className="flex">
-              <div className="form-group basis-[48%]">
-                <label for="phone">Phone</label>
-                <div className="flex basis-[48%]">
-                  <PhoneInput
-                    country={"in"}
-                    value={phone}
-                    onChange={(phone) => setPhone(phone)}
-                    inputProps={{
-                      phone: phone,
-                      required: true,
-                    }}
+              <div className="flex flex-col basis-[48%]">
+                <div className="form-group basis-[48%]">
+                  <label for="name">Contact Person</label>
+                  <input
+                    type="text"
+                    className={
+                      errorName
+                        ? "text-base bg-white py-3.5 px-4 w-full h-10 border border-red-500 outline-0 transition-all"
+                        : "text-base bg-white py-3.5 px-4 w-full h-10 border border-blue outline-0 transition-all"
+                    }
+                    id="name1"
+                    name="name"
+                    value={formValues.name}
+                    onChange={handleChange}
+                    placeholder="First and Last Name"
+                    // required
                   />
+                </div>
+                <div
+                  className={
+                    errorName
+                      ? "text-red-500 font-thin leading-tight text-[1.2vw]"
+                      : "invisible leading-tight text-[1.2vw]"
+                  }
+                >
+                  {errorMessageName}
                 </div>
               </div>
               <div className="basis-[4%]"></div>
-              <div className="form-group basis-[48%]">
-                <label for="email1">Email</label>
-                <input
-                  type="email"
-                  className="text-base bg-white py-3.5 px-4 w-full h-10 border border-blue outline-0 transition-none"
-                  id="email1"
-                  name="email"
-                  value={formValues.email}
-                  onChange={handleChange}
-                  aria-describedby="emailHelp"
-                  placeholder="name@domain.com"
-                  required
-                />
+              <div className="flex flex-col basis-[48%]">
+                <div className="form-group basis-[48%]">
+                  <label for="name">School</label>
+                  <input
+                    type="text"
+                    className={
+                      errorSchool
+                        ? "text-base bg-white py-3.5 px-4 w-full h-10 border border-red-500 outline-0 transition-all"
+                        : "text-base bg-white py-3.5 px-4 w-full h-10 border border-blue outline-0 transition-all"
+                    }
+                    id="school1"
+                    name="school"
+                    value={formValues.school}
+                    onChange={handleChange}
+                    placeholder="School/Organization Name"
+                    // required
+                  />
+                </div>
+                <div
+                  className={
+                    errorSchool
+                      ? "text-red-500 font-thin leading-tight text-[1.2vw]"
+                      : "invisible leading-tight text-[1.2vw]"
+                  }
+                >
+                  {errorMessageSchool}
+                </div>
               </div>
             </div>
-
-            <div className="form-group">
-              <label for="message">Your message</label>
-              <textarea
-                className="text-base bg-white py-3.5 px-4 w-full h-full border border-blue outline-0 transition-none"
-                rows="3"
-                id="message1"
-                name="message"
-                value={formValues.message}
-                onChange={handleChange}
-                required
-              ></textarea>
+            <div className="flex">
+              <div className="flex flex-col basis-[48%]">
+                <div className="form-group basis-[48%]">
+                  <label for="phone">Phone</label>
+                  <div className="flex basis-[48%]">
+                    <PhoneInput
+                      className={
+                        errorPhone
+                          ? "border border-red-500"
+                          : "border border-blue"
+                      }
+                      country={"in"}
+                      value={phone}
+                      onChange={(phone) => setPhone(phone)}
+                      inputProps={{
+                        phone: phone,
+                        required: true,
+                      }}
+                    />
+                  </div>
+                  <div
+                    className={
+                      errorPhone
+                        ? "text-red-500 font-thin leading-tight text-[1.2vw]"
+                        : "invisible leading-tight text-[1.2vw]"
+                    }
+                  >
+                    {errorMessagePhone}
+                  </div>
+                </div>
+              </div>
+              <div className="basis-[4%]"></div>
+              <div className="flex flex-col basis-[48%]">
+                <div className="form-group basis-[48%]">
+                  <label for="email1">Email</label>
+                  <input
+                    type="text"
+                    className={
+                      errorEmail
+                        ? "text-base bg-white py-3.5 px-4 w-full h-10 border border-red-500 outline-0 transition-all duration-500"
+                        : "text-base bg-white py-3.5 px-4 w-full h-10 border border-blue outline-0 transition-all duration-500"
+                    }
+                    id="email1"
+                    name="email"
+                    value={formValues.email}
+                    onChange={handleChange}
+                    // aria-describedby="emailHelp"
+                    placeholder="name@domain.com"
+                    // required
+                  />
+                </div>
+                <div
+                  className={
+                    errorEmail
+                      ? "text-red-500 font-thin leading-tight text-[1.2vw]"
+                      : "invisible leading-tight text-[1.2vw]"
+                  }
+                >
+                  {errorMessageEmail}
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-col ">
+              <div className="form-group">
+                <label for="message">Your message</label>
+                <textarea
+                  className={
+                    errorMessage
+                      ? "text-base bg-white py-3.5 px-4 w-full mb-[-7px] h-full border border-red-500 outline-0 transition-all"
+                      : "text-base bg-white py-3.5 px-4 w-full mb-[-7px] h-full border border-blue outline-0 transition-all"
+                  }
+                  rows="3"
+                  id="message1"
+                  name="message"
+                  value={formValues.message}
+                  onChange={handleChange}
+                  // required
+                ></textarea>
+              </div>
+              <div
+                className={
+                  errorMessage
+                    ? "text-red-500 font-thin leading-tight text-[1.2vw] mb-2"
+                    : "invisible leading-tight text-[1.2vw]"
+                }
+              >
+                {errorMessageMessage}
+              </div>
             </div>
             <button
               type="submit"
               className="bg-blue text-white font-medium text-merri py-[1.2vh] px-[7vh] z-2 text-[2.1vh]  "
             >
-              Submit
+              {loading ? (
+                <div className="loader ease-linear rounded-full border-4 border-t-4 border-white h-6 w-6"></div>
+              ) : (
+                "Submit"
+              )}
             </button>
           </form>
           <Modal
