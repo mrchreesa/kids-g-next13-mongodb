@@ -21,12 +21,6 @@ const Appointments = () => {
 
   return (
     <div className="App">
-      <Head>
-        <title>Kids Galaxy</title>
-        {/* <link href="/static/styles.css" rel="stylesheet" /> */}
-      </Head>
-      <Navbar />
-
       <div className="section section0 fp-auto-height-responsive items-center">
         <AppointmentsPage />
       </div>

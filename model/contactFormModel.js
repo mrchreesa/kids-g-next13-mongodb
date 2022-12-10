@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+// const AutoIncrement = require("mongoose-sequence")(mongoose);
 
 const ContactFormSchema = new mongoose.Schema({
   name: {
@@ -26,6 +27,9 @@ const ContactFormSchema = new mongoose.Schema({
     required: [true, "Please provide a message"],
   },
 });
+
+// ContactFormSchema.plugin(AutoIncrement, { inc_field: "id" });
+
 const Form =
   mongoose.models.ContactForm ||
   mongoose.model("ContactForm", ContactFormSchema);

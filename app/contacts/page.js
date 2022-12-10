@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import ReactFullpage from "@fullpage/react-fullpage";
 import Head from "next/head";
 import Navbar from "../../Components/NavBar";
@@ -21,11 +21,6 @@ const Contacts = () => {
 
   return (
     <div className="App">
-      <Head>
-        <title>Kids Galaxy</title>
-        <link href="/static/styles.css" rel="stylesheet" />
-      </Head>
-      <Navbar />
       <ContactForm />
     </div>
   );

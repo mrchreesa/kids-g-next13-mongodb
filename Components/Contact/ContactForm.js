@@ -4,6 +4,7 @@ import "react-phone-input-2/lib/style.css";
 import Modal from "react-modal";
 import Link from "next/link";
 import axios from "axios";
+import Image from "next/image";
 
 import { FaFacebookSquare } from "react-icons/fa";
 import { GrInstagram } from "react-icons/gr";
@@ -114,6 +115,9 @@ const ContactForm = () => {
     },
   };
 
+  // function* ticketGenerator(){
+
+  // }
   const handleSubmit = (e) => {
     e.preventDefault();
     validateInputs();
@@ -170,11 +174,18 @@ const ContactForm = () => {
         className="flex  items-center justify-center   lg:w-1/2"
         id="wwa-right"
       >
-        <img
+        <Image
+          src="/Assets/Images/ContactImage.svg"
+          alt=""
+          width={300}
+          height={300}
+          className="lg:h-auto h-auto my-[5vh] ml-[10vw] w-4/6 lg:w-5/6  mb-5"
+        />
+        {/* <img
           src="/Assets/Images/ContactImage.svg"
           alt=""
           className="lg:h-auto h-auto my-[5vh] ml-[10vw] w-4/6 lg:w-5/6  mb-5"
-        />
+        /> */}
       </div>
       <div
         className="flex lg:ml-[10vw]  container w-5/6 md:w-4/6 lg:w-1/2  flex-col "
