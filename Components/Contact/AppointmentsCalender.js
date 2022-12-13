@@ -16,99 +16,87 @@ import {
   startOfToday,
 } from "date-fns";
 import { Fragment, useState, useEffect } from "react";
-import axios from "axios";
-
-const meetings = [
-  {
-    id: 1,
-    name: "Leslie Alexander",
-    imageUrl:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    startDatetime: "2022-12-06T13:00",
-    endDatetime: "2022-12-06T14:30",
-  },
-  {
-    id: 2,
-    name: "Michael Foster",
-    imageUrl:
-      "https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    startDatetime: "2022-05-20T09:00",
-    endDatetime: "2022-05-20T11:30",
-  },
-  {
-    id: 3,
-    name: "Dries Vincent",
-    imageUrl:
-      "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    startDatetime: "2022-05-20T17:00",
-    endDatetime: "2022-05-20T18:30",
-  },
-  {
-    id: 4,
-    name: "Leslie Alexander",
-    imageUrl:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    startDatetime: "2022-06-09T13:00",
-    endDatetime: "2022-06-09T14:30",
-  },
-  {
-    id: 5,
-    name: "Michael Foster",
-    imageUrl:
-      "https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    startDatetime: "2022-05-13T14:00",
-    endDatetime: "2022-05-13T14:30",
-  },
-];
-
-//Data
-let x = {
-  slotInterval: 30,
-  openTime: "10:00",
-  closeTime: "17:00",
-};
-
-//Format the time
-let startTime = moment(x.openTime, "HH:mm");
-
-//Format the end time and the next day to it
-let endTime = moment(x.closeTime, "HH:mm");
-
-//Times
-let allSlots = [];
-
-//Loop over the times - only pushes time with 30 minutes interval
-while (startTime < endTime) {
-  //Push times
-  allSlots.push(startTime.format("HH:mm"));
-  //Add interval of 30 minutes
-  startTime.add(x.slotInterval, "minutes");
-}
+import AppointmentsModal from "./AppointmentsModal";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function AvailabilityAdmin({ adminList, jwtDecoded }) {
+export default function AppointmentsCalender({ data }) {
   let today = startOfToday();
   let [selectedDay, setSelectedDay] = useState(today);
   let [currentMonth, setCurrentMonth] = useState(format(today, "MMM-yyyy"));
   const [availableSlots, setAvailableSlots] = useState(null);
+  const [availableAdminState, setAvailableAdminState] = useState(null);
+  const [currentAdmin, setCurrentAdmin] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
 
   let firstDayCurrentMonth = parse(currentMonth, "MMM-yyyy", new Date());
 
-  let currentAdminAvailability;
+  const isModalOpen = () => {
+    setModalOpen(true);
+  };
+  const isModalClosed = () => {
+    setModalOpen(false);
+  };
 
-  if (jwtDecoded) {
-    const adminName = jwtDecoded.username;
-
-    const currentAdmin = adminList.find(
-      ({ username }) => username === adminName
-    );
-    currentAdminAvailability = currentAdmin.availability;
-  }
-
+  let meetings = [];
+  data.forEach((item, index) => {
+    item.availability.forEach((item, index) => {
+      meetings.push({ startDatetime: item.Date });
+    });
+  });
+  // console.log(meetings);
+  const availabilities = [];
+  data?.forEach((item) => {
+    availabilities.push(item.availability);
+  });
   const slotDate = moment(selectedDay).format("dddd, Do MMMM YYYY");
+  // console.log(slotDate);
+
+  // const checkAvailableSlots = (admin) => {
+  //   data.map((item) => {
+  //     item.availability.filter((date) => date.Date === slotDate);
+  //     console.log(item.availability.filter((date) => date.Date === slotDate));
+  //   });
+  //   console.log(availableSlots);
+  // };
+
+  const checkAvailableSlots = (admin) => {
+    data.map((item) => {
+      if (item.username === admin) {
+        setCurrentAdmin(item);
+        setAvailableSlots(
+          item.availability.filter((date) => date.Date === slotDate)
+        );
+      }
+    });
+  };
+
+  let availableAdmins = [];
+  data.forEach((item) =>
+    availableAdmins.push({
+      username: item.username,
+      slot: item.availability.filter((date) => date.Date === slotDate),
+    })
+  );
+
+  const getAvailableAdmins = () => {
+    if (availableAdmins.some((slot) => slot.slot.length)) {
+      setAvailableAdminState(availableAdmins);
+    } else {
+      setAvailableAdminState(null);
+    }
+  };
+
+  useEffect(() => {
+    getAvailableAdmins();
+  }, [selectedDay]);
+
+  useEffect(() => {
+    setAvailableSlots(null);
+  }, [selectedDay]);
+  // console.log(data);
 
   let days = eachDayOfInterval({
     start: firstDayCurrentMonth,
@@ -125,52 +113,12 @@ export default function AvailabilityAdmin({ adminList, jwtDecoded }) {
     setCurrentMonth(format(firstDayNextMonth, "MMM-yyyy"));
   }
 
-  let selectedDayMeetings = meetings.filter((meeting) =>
-    isSameDay(parseISO(meeting.startDatetime), selectedDay)
-  );
-
-  useEffect(() => {
-    getAvailableSlots();
-  }, []);
-
-  const getAvailableSlots = () => {
-    axios
-      .get("/api/availability")
-      .then((response) => {
-        setAvailableSlots(response.data[0].availability);
-      })
-      .catch((error) => {
-        console.log("Slots not available" + error.message);
-      });
-  };
-
-  console.log(availableSlots);
-
-  const setAvailability = (Time, Date) => {
-    axios
-      .post("/api/availability", { Time, Date })
-      .then((response) => {
-        getAvailableSlots();
-      })
-      .catch((error) => {
-        console.log(error.message);
-      });
-  };
-
-  const handleDelete = (slot) => {
-    axios
-      .delete("/api/availability", slot)
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => {
-        console.log("slot didn't delete'" + error.message);
-      });
-  };
-
+  // let selectedDayMeetings = meetings.filter((meeting) =>
+  //   isSameDay(parseISO(meeting.startDatetime), slotDate)
+  // );
   return (
     <>
-      <div className="pt-16 ml-64">
+      <div className="pt-16">
         <div className="max-w-md px-4 mx-auto sm:px-7 md:max-w-4xl md:px-6">
           <div className="md:grid md:grid-cols-2 md:divide-x md:divide-gray-200">
             <div className="sm:pr-10">
@@ -219,7 +167,9 @@ export default function AvailabilityAdmin({ adminList, jwtDecoded }) {
                   >
                     <button
                       type="button"
-                      onClick={() => setSelectedDay(day)}
+                      onClick={() => {
+                        setSelectedDay(day);
+                      }}
                       className={classNames(
                         isEqual(day, selectedDay) && "text-white",
                         !isEqual(day, selectedDay) &&
@@ -251,10 +201,14 @@ export default function AvailabilityAdmin({ adminList, jwtDecoded }) {
                     </button>
 
                     <div className="w-1 h-1 mx-auto mt-1">
-                      {meetings.some((meeting) =>
-                        isSameDay(parseISO(meeting.startDatetime), day)
-                      ) && (
-                        <div className="w-1 h-1 rounded-full bg-sky-500"></div>
+                      {meetings.map((meeting, index) =>
+                        meeting.startDatetime ===
+                        moment(day).format("dddd, Do MMMM YYYY") ? (
+                          <div
+                            key={index}
+                            className="w-1 h-1 rounded-full bg-sky-500"
+                          ></div>
+                        ) : null
                       )}
                     </div>
                   </div>
@@ -269,18 +223,20 @@ export default function AvailabilityAdmin({ adminList, jwtDecoded }) {
                 </time>
               </h2>
               <div className="flex items-center flex-wrap mt-4 space-y-1 text-sm leading-6 text-gray-500">
-                {allSlots.map((slotTime, index) => (
-                  <div key={index}>
-                    <button
-                      onClick={() => setAvailability(slotTime, slotDate)}
-                      className="w-[10vw] px-4 py-2 border m-1  group rounded-xl focus-within:bg-gray-100 hover:bg-gray-100"
-                    >
-                      <div className="flex-auto">
-                        <p className="mt-0.5">{slotTime}</p>
-                      </div>
-                    </button>
-                  </div>
-                ))}
+                {availableAdminState?.map((admin, index) =>
+                  admin.slot.length ? (
+                    <div key={index}>
+                      <button
+                        onClick={() => checkAvailableSlots(admin?.username)}
+                        className="w-[10vw] px-4 py-2 border m-1  group rounded-xl focus-within:bg-gray-100 hover:bg-gray-100"
+                      >
+                        <div className="flex-auto">
+                          <p className="mt-0.5">{admin.username}</p>
+                        </div>
+                      </button>
+                    </div>
+                  ) : null
+                )}
               </div>
             </section>
           </div>
@@ -290,7 +246,7 @@ export default function AvailabilityAdmin({ adminList, jwtDecoded }) {
         <h1 className="items-center">Available slots</h1>
         {availableSlots?.map((slot, index) => (
           <button
-            onClick={() => handleDelete(slot)}
+            onClick={isModalOpen}
             key={index}
             className="w-content px-4 py-2 border m-1  group rounded-xl focus-within:bg-gray-100 hover:bg-gray-100"
           >
@@ -299,6 +255,12 @@ export default function AvailabilityAdmin({ adminList, jwtDecoded }) {
           </button>
         ))}
       </div>
+      <AppointmentsModal
+        isModalClosed={isModalClosed}
+        modalOpen={modalOpen}
+        availableSlots={availableSlots}
+        currentAdmin={currentAdmin}
+      />
     </>
   );
 }

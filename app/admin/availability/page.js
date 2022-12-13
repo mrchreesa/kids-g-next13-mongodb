@@ -4,9 +4,7 @@ import { cookies } from "next/headers";
 import { decode } from "jsonwebtoken";
 
 async function getAdminList() {
-  const res = await fetch("http://localhost:3000/api/availabilityList", {
-    next: { revalidate: 2 },
-  });
+  const res = await fetch("http://localhost:3000/api/availabilityList");
   if (!res.ok) {
     console.log(res);
     // throw new Error("Failed to fetch data ");
@@ -24,7 +22,6 @@ const Availability = async () => {
     jwtDecoded = decode(value);
     adminList = await getAdminList();
   }
-
   return (
     <div>
       {" "}

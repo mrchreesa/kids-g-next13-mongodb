@@ -1,28 +1,22 @@
-"use client";
-import React, { useState } from "react";
-import ReactFullpage from "@fullpage/react-fullpage";
-import Head from "next/head";
-import Navbar from "../../Components/NavBar";
-import AppointmentsPage from "../../Components/Contact/Appointments";
+import React from "react";
+import AppointmentsPage from "../../Components/Contact/AppointmentsPage";
 
-// NOTE: if using fullpage extensions/plugins put them here and pass it as props.
-const pluginWrapper = () => {
-  /*
-   * require('../static/fullpage.scrollHorizontally.min.js'); // Optional. Required when using the "scrollHorizontally" extension.
-   */
+const getAvailableSlots = async () => {
+  const res = await fetch("http://localhost:3000/api/availabilityList");
+  if (!res.ok) {
+    console.log(res);
+    // throw new Error("Failed to fetch data ");
+  }
+
+  return res.json();
 };
 
-const Appointments = () => {
-  const onLeave = (origin, destination, direction) => {
-    console.log("onLeave", { origin, destination, direction });
-    // arguments are mapped in order of fullpage.js callback arguments do something
-    // with the event
-  };
-
+const Appointments = async () => {
+  const data = await getAvailableSlots();
   return (
     <div className="App">
       <div className="section section0 fp-auto-height-responsive items-center">
-        <AppointmentsPage />
+        <AppointmentsPage data={data} />
       </div>
     </div>
   );

@@ -14,7 +14,7 @@ const handler = async (req, res) => {
 
     if (req.method === "POST") {
       await Users.findOneAndUpdate(
-        username,
+        { username: username },
         { $push: { availability: req.body } },
         {
           new: true,
