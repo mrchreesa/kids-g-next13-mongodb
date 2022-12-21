@@ -12,7 +12,7 @@ const handler = async (req, res) => {
   if (req.method === "POST") {
     const { email, password } = req.body;
     const user = await Users.find({ email });
-    bcrypt.compare(password, user[0].password, function (err, result) {
+    bcrypt.compare(password, user[0]?.password, function (err, result) {
       if (!err && result) {
         const jwt = sign(
           {
@@ -34,7 +34,7 @@ const handler = async (req, res) => {
         );
         res.status(200).send({ message: "Welcome back to the app!" });
       } else {
-        res.json({ success: false, message: "passwords do not match" });
+        res.send({ success: false, message: "passwords do not match" });
       }
     });
   } else {

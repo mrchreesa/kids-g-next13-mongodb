@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
 import PhoneInput from "react-phone-input-2";
+import moment from "moment";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+
 import "react-phone-input-2/lib/style.css";
 
 const AppointmentsModal = ({
-  availableSlots,
+  uniqueSlots,
   modalOpen,
-  currentAdmin,
   isModalClosed,
+  slotIndex,
 }) => {
-  const initialValues = { name: "", school: "", email: "", message: "" };
+  const initialValues = { name: "", school: "", email: "" };
 
   const [phone, setPhone] = useState("");
   const [formValues, setFormValues] = useState(initialValues);
@@ -20,19 +24,18 @@ const AppointmentsModal = ({
   const [formSchool, setFormSchool] = useState("");
   const [formPhone, setFormPhone] = useState("");
   const [formEmail, setFormEmail] = useState("");
-  const [formMessage, setFormMessage] = useState("");
 
   const [errorMessageName, setErrorMessageName] = useState("Error");
   const [errorMessageSchool, setErrorMessageSchool] = useState("Error");
   const [errorMessagePhone, setErrorMessagePhone] = useState("Error");
   const [errorMessageEmail, setErrorMessageEmail] = useState("Error");
-  const [errorMessageMessage, setErrorMessageMessage] = useState("Error");
 
   const [errorName, setErrorName] = useState(false);
   const [errorSchool, setErrorSchool] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(false);
   const [errorEmail, setErrorEmail] = useState(false);
   const [errorPhone, setErrorPhone] = useState(false);
+
+  const router = useRouter();
 
   const isValidEmail = (email) => {
     const re =
@@ -86,13 +89,6 @@ const AppointmentsModal = ({
       setErrorEmail(false);
       setFormEmail(formValues.email);
     }
-    if (formValues.message === "") {
-      setErrorMessageMessage("Message is required");
-      setErrorMessage(true);
-    } else {
-      setErrorMessage(false);
-      setFormMessage(formValues.message);
-    }
   };
   const openModal = () => {
     setIsOpenModal(true);
@@ -107,12 +103,13 @@ const AppointmentsModal = ({
       left: "50%",
       right: "auto",
       bottom: "auto",
+      display: "flex",
+      justifyContent: "center",
       marginRight: "-50%",
       borderRadius: "25px",
       transform: "translate(-50%, -50%)",
     },
   };
-
   const handleSubmit = (e) => {
     e.preventDefault();
     validateInputs();
@@ -123,32 +120,36 @@ const AppointmentsModal = ({
       errorEmail !== true
     ) {
       setLoading(true);
-      //   axios
-      //     .post("/api/contact", {
-      //       name: formValues.name,
-      //       school: formValues.school,
-      //       phone: phone,
-      //       email: formValues.email,
-      //       message: formValues.message,
-      //     })
-      //     .then((response) => {
+      axios
+        .post("/api/emailConfirm", {
+          name: formValues.name,
+
+          email: formValues.email,
+        })
+        .then((response) => {
+          console.log(response);
+        });
+
+      // axios
+      //   .post("/api/appointment", {
+      //     slot: uniqueSlots[slotIndex],
+      //     name: formValues.name,
+      //     school: formValues.school,
+      //     phone: phone,
+      //     email: formValues.email,
+      //   })
+      //   .then((response) => {
+      //     if (response.status === 201) {
+      //       router.push("/");
       //       setLoading(false);
-      //       console.log(response);
-      //       if (response.status === 201) {
-      //         console.log("Message Sent.");
-      //         openModal();
-      //         setFormValues(initialValues);
-      //         setPhone("");
-      //         setFormEmail("");
-      //       } else if (response.status === 202) {
-      //         alert(
-      //           "You have already submitted a message with us and we will get back to you soon!"
-      //         );
-      //         setFormValues(initialValues);
-      //         setPhone("");
-      //         setFormEmail("");
-      //       }
-      //     });
+      //       isModalClosed();
+      //     } else if (response.status === 202) {
+      //       alert("You have already booked an appointment with us. Thank you!");
+      //       router.push("/");
+      //     }
+      //   });
+    } else {
+      alert("Please enter a valid contact form");
     }
   };
 
@@ -156,7 +157,13 @@ const AppointmentsModal = ({
     const { value, name } = e.target;
     setFormValues({ ...formValues, [name]: value });
   };
-  console.log(availableSlots);
+  //Separation of the Date and Time for UI
+  const dateToDate = (time) => {
+    return moment(time).format("Do MMMM YYYY");
+  };
+  const dateToTime = (time) => {
+    return moment(time).format("HH:mm");
+  };
   return (
     <Modal
       style={customStyles}
@@ -168,22 +175,18 @@ const AppointmentsModal = ({
         {" "}
         <form id="contact-form" onSubmit={handleSubmit} method="POST">
           <h2 className="text-[2vh] text-center text-merri ">
-            You're booking an appointment for:
+            Your booking is:
           </h2>
           <h2 className="text-[3vh] text-center text-merri leading-[7.5vh]">
-            {availableSlots ? availableSlots[0]?.Date : null}
+            {uniqueSlots ? dateToDate(uniqueSlots[slotIndex]?.slot) : null}
           </h2>
-          <h2 className="text-[3vh] text-center font-semibold text-gray-900 ">
-            {availableSlots ? availableSlots[0]?.Time : null}
-          </h2>
-          <h2 className="text-[2vh] text-center text-merri ">With</h2>
-          <h2 className="text-[3vh] text-center font-semibold text-gray-900 ">
-            {currentAdmin?.username}
+          <h2 className="text-[3vh] text-center text-merri mb-2">
+            {uniqueSlots ? dateToTime(uniqueSlots[slotIndex]?.slot) : null}
           </h2>
           <div className="flex">
             <div className="flex flex-col basis-[48%]">
               <div className="form-group basis-[48%]">
-                <label for="name">Contact Person</label>
+                <label htmlFor="name">Contact Person</label>
                 <input
                   type="text"
                   className={
@@ -212,7 +215,7 @@ const AppointmentsModal = ({
             <div className="basis-[4%]"></div>
             <div className="flex flex-col basis-[48%]">
               <div className="form-group basis-[48%]">
-                <label for="name">School</label>
+                <label htmlFor="name">School</label>
                 <input
                   type="text"
                   className={
@@ -242,7 +245,7 @@ const AppointmentsModal = ({
           <div className="flex">
             <div className="flex flex-col basis-[48%]">
               <div className="form-group basis-[48%]">
-                <label for="phone">Phone</label>
+                <label htmlFor="phone">Phone</label>
                 <div className="flex basis-[48%]">
                   <PhoneInput
                     className={
@@ -273,7 +276,7 @@ const AppointmentsModal = ({
             <div className="basis-[4%]"></div>
             <div className="flex flex-col basis-[48%]">
               <div className="form-group basis-[48%]">
-                <label for="email1">Email</label>
+                <label htmlFor="email1">Email</label>
                 <input
                   type="text"
                   className={

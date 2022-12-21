@@ -115,9 +115,6 @@ const ContactForm = () => {
     },
   };
 
-  // function* ticketGenerator(){
-
-  // }
   const handleSubmit = (e) => {
     e.preventDefault();
     validateInputs();
@@ -157,9 +154,6 @@ const ContactForm = () => {
         });
     }
   };
-  // useEffect(() => {
-  //   console.log("Use effect ran" + errorName);
-  // }, [errorName]);
 
   const handleChange = (e) => {
     const { value, name } = e.target;

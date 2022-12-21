@@ -4,17 +4,30 @@ import { cookies } from "next/headers";
 import Link from "next/link";
 import { decode } from "jsonwebtoken";
 
-const SignUp = () => {
+const getUsersList = async () => {
+  const res = await fetch("http://localhost:3000/api/availabilityList");
+  if (!res.ok) {
+    console.log(res);
+    // throw new Error("Failed to fetch data ");
+  }
+
+  return res.json();
+};
+const SignUp = async () => {
   const cookiesList = cookies();
   const authCookie = cookiesList.get("auth");
 
   const jwtDecoded = decode(authCookie?.value);
-  console.log(jwtDecoded);
+  const usersList = await getUsersList();
 
   return (
     <div>
       {" "}
-      <Registration jwtDecoded={jwtDecoded} authCookie={authCookie} />{" "}
+      <Registration
+        jwtDecoded={jwtDecoded}
+        authCookie={authCookie}
+        usersList={usersList}
+      />{" "}
     </div>
   );
 };

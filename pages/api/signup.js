@@ -24,6 +24,7 @@ const handler = async (req, res) => {
           email,
           superAdmin: true,
           availability: [],
+          appointments: [],
         });
 
         newUser
@@ -34,26 +35,26 @@ const handler = async (req, res) => {
               .save()
               .then(() => {
                 console.log("Saved successfully." + newUser);
-                const jwt = sign(
-                  {
-                    id: newUser._id,
-                    username: newUser.username,
-                    eamil: newUser.email,
-                    superAdmin: newUser.superAdmin,
-                  },
-                  process.env.ACCESS_TOKEN_SECRET,
-                  { expiresIn: "30d" }
-                );
-                res.setHeader(
-                  "Set-Cookie",
-                  cookie.serialize("auth", jwt, {
-                    httpOnly: true,
-                    secure: process.env.NODE_ENV !== "development",
-                    sameSite: "strict",
-                    maxAge: 3600,
-                    path: "/",
-                  })
-                );
+                // const jwt = sign(
+                //   {
+                //     id: newUser._id,
+                //     username: newUser.username,
+                //     eamil: newUser.email,
+                //     superAdmin: newUser.superAdmin,
+                //   },
+                //   process.env.ACCESS_TOKEN_SECRET,
+                //   { expiresIn: "30d" }
+                // );
+                // res.setHeader(
+                //   "Set-Cookie",
+                //   cookie.serialize("auth", jwt, {
+                //     httpOnly: true,
+                //     secure: process.env.NODE_ENV !== "development",
+                //     sameSite: "strict",
+                //     maxAge: 3600,
+                //     path: "/",
+                //   })
+                // );
                 res.status(200).json({ message: "Registration successful" });
                 console.log("Registration successful.");
               })

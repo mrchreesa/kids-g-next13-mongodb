@@ -10,7 +10,7 @@ const defaultLoginFieldValues = {
   password: "",
 };
 
-const Registration = ({ jwtDecoded, authCookie }) => {
+const Registration = ({ jwtDecoded, authCookie, usersList }) => {
   const [loginFieldValues, setLoginFieldValues] = useState(
     defaultLoginFieldValues
   );
@@ -23,6 +23,17 @@ const Registration = ({ jwtDecoded, authCookie }) => {
   const [helperTextEmail, setHelperTextEmail] = useState("");
   const [helperTextPassword, setHelperTextPassword] = useState("");
 
+  const [adminList, setAdminList] = useState([]);
+
+  let newAdminList = [];
+  usersList.forEach((item) =>
+    newAdminList.push({
+      username: item.username,
+      superAdmin: item.superAdmin,
+    })
+  );
+  // setAdminList(newAdminList);
+  console.log(newAdminList);
   const router = useRouter();
 
   const handleChange = (e) => {
@@ -76,7 +87,7 @@ const Registration = ({ jwtDecoded, authCookie }) => {
           // const { token } = response.data;
           console.log(response);
           if (response.status === 200) {
-            router.push("/admin/dashboard");
+            router.push("/admin");
           }
           setLoginFieldValues(defaultLoginFieldValues);
         })
@@ -147,7 +158,6 @@ const Registration = ({ jwtDecoded, authCookie }) => {
                   />
                 </div>
               </div>
-
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
                   <input
@@ -164,7 +174,6 @@ const Registration = ({ jwtDecoded, authCookie }) => {
                   </label>
                 </div>
               </div>
-
               <div>
                 <button
                   onClick={loginWithCredentials}
@@ -187,11 +196,19 @@ const Registration = ({ jwtDecoded, authCookie }) => {
                     </svg>
                   </span>
                   Sign Up
-                </button>
-              </div>
+                </button>{" "}
+              </div>{" "}
             </form>
           )}
-        </div>
+        </div>{" "}
+      </div>{" "}
+      <div className="flex min-h-full items-center justify-center py-12 ml-64 px-4 sm:px-6 lg:px-8">
+        {newAdminList.map((admin, i) => (
+          <div className=" px-4 py-2 border m-1 rounded-xl " key={i}>
+            <p>Username: {admin.username}</p>
+            <p>Super Admin :{admin.superAdmin ? " Yes" : " No"}</p>
+          </div>
+        ))}
       </div>
     </>
   );

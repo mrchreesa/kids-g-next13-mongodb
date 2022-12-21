@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const AvailabilitySchema = new mongoose.Schema({
-  start: Date,
+  availability: { type: Array, trim: true },
 });
 
 const Availability =

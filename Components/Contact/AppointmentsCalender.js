@@ -1,6 +1,7 @@
 "use client";
 import { Menu, Transition } from "@headlessui/react";
 import moment from "moment";
+
 import {
   add,
   eachDayOfInterval,
@@ -27,77 +28,95 @@ export default function AppointmentsCalender({ data }) {
   let [selectedDay, setSelectedDay] = useState(today);
   let [currentMonth, setCurrentMonth] = useState(format(today, "MMM-yyyy"));
   const [availableSlots, setAvailableSlots] = useState(null);
-  const [availableAdminState, setAvailableAdminState] = useState(null);
-  const [currentAdmin, setCurrentAdmin] = useState(null);
+  const [slotIndex, setSlotIndex] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
 
   let firstDayCurrentMonth = parse(currentMonth, "MMM-yyyy", new Date());
 
-  const isModalOpen = () => {
+  // Modal
+  const isModalOpen = (i) => {
     setModalOpen(true);
+    setSlotIndex(i);
   };
   const isModalClosed = () => {
     setModalOpen(false);
   };
 
-  let meetings = [];
+  // Data sctructuring
+  let allSlotsFromAdmin = [];
   data.forEach((item, index) => {
-    item.availability.forEach((item, index) => {
-      meetings.push({ startDatetime: item.Date });
+    allSlotsFromAdmin.push({
+      username: item.username,
+      slots: item.availability,
     });
   });
-  // console.log(meetings);
-  const availabilities = [];
-  data?.forEach((item) => {
-    availabilities.push(item.availability);
+  // console.log(allSlotsFromAdmin);
+  let slotsForSelectedDay = [];
+
+  allSlotsFromAdmin.forEach((item, index) => {
+    item.slots.forEach((slot, i) => {
+      if (
+        moment(slot).get("date") === moment(selectedDay).get("date") &&
+        moment(slot).get("month") === moment(selectedDay).get("month")
+      ) {
+        slotsForSelectedDay.push({
+          username: item.username,
+          slot: slot,
+        });
+      }
+    });
   });
+  //Sorting slots in ascending order
+  slotsForSelectedDay.sort(function (a, b) {
+    var c = new Date(a.slot);
+    var d = new Date(b.slot);
+    return c - d;
+  });
+
+  //Removing duplicate slots
+  const slotsWithoutDuplicates = [];
+
+  let uniqueSlots = slotsForSelectedDay.filter((item) => {
+    const isDuplicate = slotsWithoutDuplicates.includes(item.slot);
+    if (!isDuplicate) {
+      slotsWithoutDuplicates.push(item.slot);
+
+      return true;
+    }
+
+    return false;
+  });
+  console.log(uniqueSlots);
   const slotDate = moment(selectedDay).format("dddd, Do MMMM YYYY");
-  // console.log(slotDate);
 
   // const checkAvailableSlots = (admin) => {
   //   data.map((item) => {
-  //     item.availability.filter((date) => date.Date === slotDate);
-  //     console.log(item.availability.filter((date) => date.Date === slotDate));
+  //     if (item.username === admin) {
+  //       setCurrentAdmin(item);
+  //       setAvailableSlots(
+  //         item.availability.filter((date) => date.Date === slotDate)
+  //       );
+  //     }
   //   });
-  //   console.log(availableSlots);
   // };
 
-  const checkAvailableSlots = (admin) => {
-    data.map((item) => {
-      if (item.username === admin) {
-        setCurrentAdmin(item);
-        setAvailableSlots(
-          item.availability.filter((date) => date.Date === slotDate)
-        );
-      }
-    });
-  };
+  // let availableAdmins = [];
+  // data.forEach((item) =>
+  //   availableAdmins.push({
+  //     username: item.username,
+  //     slot: item.availability.filter((date) => date.Date === slotDate),
+  //   })
+  // );
 
-  let availableAdmins = [];
-  data.forEach((item) =>
-    availableAdmins.push({
-      username: item.username,
-      slot: item.availability.filter((date) => date.Date === slotDate),
-    })
-  );
-
-  const getAvailableAdmins = () => {
-    if (availableAdmins.some((slot) => slot.slot.length)) {
-      setAvailableAdminState(availableAdmins);
-    } else {
-      setAvailableAdminState(null);
-    }
-  };
-
-  useEffect(() => {
-    getAvailableAdmins();
-  }, [selectedDay]);
+  // useEffect(() => {
+  // }, [selectedDay]);
 
   useEffect(() => {
     setAvailableSlots(null);
   }, [selectedDay]);
   // console.log(data);
 
+  //Calendar funtionality
   let days = eachDayOfInterval({
     start: firstDayCurrentMonth,
     end: endOfMonth(firstDayCurrentMonth),
@@ -113,9 +132,14 @@ export default function AppointmentsCalender({ data }) {
     setCurrentMonth(format(firstDayNextMonth, "MMM-yyyy"));
   }
 
-  // let selectedDayMeetings = meetings.filter((meeting) =>
-  //   isSameDay(parseISO(meeting.startDatetime), slotDate)
-  // );
+  //Separation of the Date and Time for UI
+  const dateToDate = (time) => {
+    return moment(time).format("Do MMMM YYYY");
+  };
+  const dateToTime = (time) => {
+    return moment(time).format("HH:mm");
+  };
+
   return (
     <>
       <div className="pt-16">
@@ -201,8 +225,8 @@ export default function AppointmentsCalender({ data }) {
                     </button>
 
                     <div className="w-1 h-1 mx-auto mt-1">
-                      {meetings.map((meeting, index) =>
-                        meeting.startDatetime ===
+                      {allSlotsFromAdmin.map((slot, index) =>
+                        slot.startDatetime ===
                         moment(day).format("dddd, Do MMMM YYYY") ? (
                           <div
                             key={index}
@@ -222,44 +246,32 @@ export default function AppointmentsCalender({ data }) {
                   {format(selectedDay, "MMM dd, yyy")}
                 </time>
               </h2>
+              <h1 className="items-center">Available slots</h1>
+
               <div className="flex items-center flex-wrap mt-4 space-y-1 text-sm leading-6 text-gray-500">
-                {availableAdminState?.map((admin, index) =>
-                  admin.slot.length ? (
-                    <div key={index}>
-                      <button
-                        onClick={() => checkAvailableSlots(admin?.username)}
-                        className="w-[10vw] px-4 py-2 border m-1  group rounded-xl focus-within:bg-gray-100 hover:bg-gray-100"
-                      >
-                        <div className="flex-auto">
-                          <p className="mt-0.5">{admin.username}</p>
-                        </div>
-                      </button>
-                    </div>
-                  ) : null
-                )}
+                {uniqueSlots?.map((item, index) => (
+                  <button
+                    onClick={() => isModalOpen(index)}
+                    key={index}
+                    className="w-content px-4 py-2 border m-1  group rounded-xl focus-within:bg-gray-100 hover:bg-gray-100"
+                  >
+                    {/* <p className=" text-gray-900">{dateToDate(item.slot)}</p> */}
+                    <p className="font-semibold text-gray-900">
+                      {dateToTime(item.slot)}
+                    </p>
+                  </button>
+                ))}
               </div>
             </section>
           </div>
         </div>
       </div>
-      <div className="flex flex-col ml-64 w-max pt-10">
-        <h1 className="items-center">Available slots</h1>
-        {availableSlots?.map((slot, index) => (
-          <button
-            onClick={isModalOpen}
-            key={index}
-            className="w-content px-4 py-2 border m-1  group rounded-xl focus-within:bg-gray-100 hover:bg-gray-100"
-          >
-            <p>{slot?.Date}</p>
-            <p className="font-semibold text-gray-900">{slot?.Time}</p>
-          </button>
-        ))}
-      </div>
+      <div className="flex flex-col ml-64 w-max pt-10"></div>
       <AppointmentsModal
         isModalClosed={isModalClosed}
         modalOpen={modalOpen}
-        availableSlots={availableSlots}
-        currentAdmin={currentAdmin}
+        uniqueSlots={uniqueSlots}
+        slotIndex={slotIndex}
       />
     </>
   );

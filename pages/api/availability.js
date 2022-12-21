@@ -7,7 +7,6 @@ const handler = async (req, res) => {
   const cookies = new Cookies(req, res);
   const jwt = cookies.get("auth");
   await connectDB();
-  console.log("Connected to Mongo");
   if (jwt) {
     const jwtDecoded = decode(jwt);
     const { username } = jwtDecoded;
@@ -37,12 +36,12 @@ const handler = async (req, res) => {
           console.log(error);
           res.status(400).send("Slots fetch failed" + error.message);
         });
-    } else if (req.method === "DELETE") {
-      const { Date, Time } = req.body;
-
+    } else if (req.method === "PATCH") {
+      const obj = Object.assign({}, req.body);
+      const newObj = Object.keys(obj);
       await Users.findOneAndUpdate(
-        username,
-        { $pull: { availability: { Date, Time } } },
+        { username },
+        { $pull: { availability: newObj[0] } },
         {
           new: true,
         }

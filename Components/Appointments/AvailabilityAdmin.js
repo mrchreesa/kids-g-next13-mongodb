@@ -61,30 +61,6 @@ const meetings = [
   },
 ];
 
-//Data
-let x = {
-  slotInterval: 30,
-  openTime: "10:00",
-  closeTime: "17:00",
-};
-
-//Format the time
-let startTime = moment(x.openTime, "HH:mm");
-
-//Format the end time and the next day to it
-let endTime = moment(x.closeTime, "HH:mm");
-
-//Times
-let allSlots = [];
-
-//Loop over the times - only pushes time with 30 minutes interval
-while (startTime < endTime) {
-  //Push times
-  allSlots.push(startTime.format("HH:mm"));
-  //Add interval of 30 minutes
-  startTime.add(x.slotInterval, "minutes");
-}
-
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
@@ -108,8 +84,40 @@ export default function AvailabilityAdmin({ adminList, jwtDecoded }) {
     currentAdminAvailability = currentAdmin.availability;
   }
 
+  //Data
+  let x = {
+    slotInterval: 30,
+    openTime: "10:00",
+    closeTime: "17:00",
+  };
+
+  //Format the time
+  let startTime = moment(x.openTime, "HH:mm");
+
+  //Format the end time and the next day to it
+  let endTime = moment(x.closeTime, "HH:mm");
+
+  //Times
+  let allSlots = [];
+
+  //Loop over the times - only pushes time with 30 minutes interval
+  while (startTime < endTime) {
+    //Push times
+    allSlots.push(startTime.format("HH:mm"));
+    //Add interval of 30 minutes
+    startTime.add(x.slotInterval, "minutes");
+  }
+
   const slotDate = moment(selectedDay).format("dddd, Do MMMM YYYY");
 
+  const dateToDate = (time) => {
+    return moment(time).format("Do MMMM YYYY");
+  };
+  const dateToTime = (time) => {
+    return moment(time).format("HH:mm");
+  };
+  // console.log(selectedDateTime);
+  // console.log(newDate._d);
   let days = eachDayOfInterval({
     start: firstDayCurrentMonth,
     end: endOfMonth(firstDayCurrentMonth),
@@ -144,11 +152,13 @@ export default function AvailabilityAdmin({ adminList, jwtDecoded }) {
       });
   };
 
-  console.log(availableSlots);
+  // console.log(availableSlots);
 
-  const setAvailability = (Time, Date) => {
+  const setAvailability = (time) => {
+    let dateTime = moment(selectedDay).add(moment.duration(time));
+    console.log(dateTime._d);
     axios
-      .post("/api/availability", { Time, Date })
+      .post("/api/availability", dateTime._d)
       .then((response) => {
         getAvailableSlots();
       })
@@ -159,15 +169,15 @@ export default function AvailabilityAdmin({ adminList, jwtDecoded }) {
 
   const handleDelete = (slot) => {
     axios
-      .delete("/api/availability", slot)
+      .patch("/api/availability", slot)
       .then((response) => {
-        console.log(response);
+        // console.log(response);
+        getAvailableSlots();
       })
       .catch((error) => {
         console.log("slot didn't delete'" + error.message);
       });
   };
-
   return (
     <>
       <div className="pt-16 ml-64">
@@ -272,7 +282,7 @@ export default function AvailabilityAdmin({ adminList, jwtDecoded }) {
                 {allSlots.map((slotTime, index) => (
                   <div key={index}>
                     <button
-                      onClick={() => setAvailability(slotTime, slotDate)}
+                      onClick={() => setAvailability(slotTime)}
                       className="w-[10vw] px-4 py-2 border m-1  group rounded-xl focus-within:bg-gray-100 hover:bg-gray-100"
                     >
                       <div className="flex-auto">
@@ -294,8 +304,8 @@ export default function AvailabilityAdmin({ adminList, jwtDecoded }) {
             key={index}
             className="w-content px-4 py-2 border m-1  group rounded-xl focus-within:bg-gray-100 hover:bg-gray-100"
           >
-            <p>{slot?.Date}</p>
-            <p className="font-semibold text-gray-900">{slot?.Time}</p>
+            <p className=" text-gray-900">{dateToDate(slot)}</p>
+            <p className="font-semibold text-gray-900">{dateToTime(slot)}</p>
           </button>
         ))}
       </div>

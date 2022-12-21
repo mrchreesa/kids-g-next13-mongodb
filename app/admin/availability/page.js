@@ -15,6 +15,7 @@ async function getAdminList() {
 const Availability = async () => {
   const cookiesList = cookies();
   const authCookie = cookiesList.get("auth");
+
   let jwtDecoded;
   let adminList;
   if (authCookie) {
