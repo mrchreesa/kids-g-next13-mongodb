@@ -25,6 +25,7 @@ const handler = async (req, res) => {
           superAdmin: true,
           availability: [],
           appointments: [],
+          unverifiedAppointments: [],
         });
 
         newUser

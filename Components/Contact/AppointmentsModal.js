@@ -111,6 +111,14 @@ const AppointmentsModal = ({
     },
   };
   const handleSubmit = (e) => {
+    const data = {
+      slot: uniqueSlots[slotIndex],
+      name: formValues.name,
+      school: formValues.school,
+      phone: phone,
+      email: formValues.email,
+      verified: false,
+    };
     e.preventDefault();
     validateInputs();
     if (
@@ -120,37 +128,47 @@ const AppointmentsModal = ({
       errorEmail !== true
     ) {
       setLoading(true);
+      const req1 = axios.post("/api/unverified", data);
+      const req2 = axios.post("/api/emailConfirm", {
+        data,
+      });
+
       axios
-        .post("/api/emailConfirm", {
-          name: formValues.name,
-
-          email: formValues.email,
-        })
-        .then((response) => {
-          console.log(response);
+        .all([req1, req2])
+        .then(
+          axios.spread((...responses) => {
+            const res1 = responses[0];
+            const res2 = responses[1];
+            if (res1.status === 201) {
+              isModalClosed();
+              setLoading(false);
+              alert(
+                "Please confirm you email address by clicking on the link in your email"
+              );
+              setFormValues(initialValues);
+              setPhone("");
+              setFormEmail("");
+            }
+          })
+        )
+        .catch((errors) => {
+          // react on errors.
+          console.error(errors);
         });
-
-      // axios
-      //   .post("/api/appointment", {
-      //     slot: uniqueSlots[slotIndex],
-      //     name: formValues.name,
-      //     school: formValues.school,
-      //     phone: phone,
-      //     email: formValues.email,
-      //   })
-      //   .then((response) => {
-      //     if (response.status === 201) {
-      //       router.push("/");
-      //       setLoading(false);
-      //       isModalClosed();
-      //     } else if (response.status === 202) {
-      //       alert("You have already booked an appointment with us. Thank you!");
-      //       router.push("/");
-      //     }
-      //   });
-    } else {
-      alert("Please enter a valid contact form");
     }
+    //  axios
+    //   .post("/api/emailConfirm", {
+    //     name: formValues.name,
+
+    //     email: formValues.email,
+    //   })
+    //   .then((response) => {
+    //     console.log(response);
+    //     if (response.status === 200) {
+    //       isModalClosed();
+    //       setLoading(false);
+    //     }
+    //   });
   };
 
   const handleChange = (e) => {

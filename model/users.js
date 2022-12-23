@@ -33,6 +33,7 @@ const UsersSchema = new mongoose.Schema({
   },
   availability: { type: Array, trim: true },
   appointments: { type: Array, trim: true },
+  unverifiedAppointments: { type: Array, trim: true },
 });
 
 const Users = mongoose.models.Users || mongoose.model("Users", UsersSchema);
