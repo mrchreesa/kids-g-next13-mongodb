@@ -13,6 +13,7 @@ const nextConfig = {
   experimental: {
     appDir: true,
     enableUndici: true,
+    serverComponentsExternalPackages: ["@acme/ui"],
   },
 };
 
