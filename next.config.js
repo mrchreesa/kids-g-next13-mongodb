@@ -12,6 +12,7 @@ const nextConfig = {
   reactStrictMode: true,
   experimental: {
     appDir: true,
+    enableUndici: true,
   },
 };
 
