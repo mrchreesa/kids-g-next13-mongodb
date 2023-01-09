@@ -6,7 +6,7 @@ const MainPage = () => {
     <>
       <div className="container flex flex-col-reverse lg:flex-row mb-24 items-center ">
         <div
-          className="flex  lg:w-1/2 md:items-start  md:items-content-center lg:mr-24 mb-20 flex-col text-left"
+          className="flex ml-3  lg:w-1/2 md:items-start  md:items-content-center lg:mr-24 mb-20 flex-col text-left"
           id="wwa-left"
         >
           <h3 className="text-5v lg:text-3v font-merri text-blue w-max md:tracking-wide leading-[7vh] mb-[4vh] p-0 ">
@@ -23,7 +23,7 @@ const MainPage = () => {
             </Link>
             <Link
               className="bg-transparent text-blue hover:bg-gray-300 hover:border-gray-400 transition-all font-medium z-2 font-mont ml-4 tracking-wider border border-blue p-4"
-              href={"/contact"}
+              href={"/contacts"}
             >
               Get In Touch
             </Link>

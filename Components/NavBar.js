@@ -1,6 +1,5 @@
 "use client";
 import { Fragment } from "react";
-
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { FaFacebookSquare } from "react-icons/fa";
 import { GrInstagram } from "react-icons/gr";
@@ -62,7 +61,7 @@ export default function Navbar() {
                 </div>
                 <div className="flex grow"></div>
                 <div className="w-max hidden lg:flex items-center mr-5">
-                  <Link className="m-2" href={"/contact"}>
+                  <Link className="m-2" href={"/contacts"}>
                     <BsChatSquareDotsFill className="text-3v lg:text-2v md:max-w-[26px] md:mr-2" />
                   </Link>
                   <Link

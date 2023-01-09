@@ -127,7 +127,7 @@ const ContactForm = () => {
     ) {
       setLoading(true);
       axios
-        .post("/api/contact", {
+        .post("http://localhost:3000/api/contact", {
           name: formValues.name,
           school: formValues.school,
           phone: phone,
@@ -151,7 +151,8 @@ const ContactForm = () => {
             setPhone("");
             setFormEmail("");
           }
-        });
+        })
+        .catch((err) => console.log(err));
     }
   };
 
@@ -160,7 +161,6 @@ const ContactForm = () => {
     setFormValues({ ...formValues, [name]: value });
   };
   // console.log(formValues);
-  console.log(formName, formSchool, formPhone, formEmail, formMessage);
 
   return (
     <div className=" flex flex-col-reverse lg:flex-row justify-center font-merri  items-center ">
@@ -175,11 +175,6 @@ const ContactForm = () => {
           height={300}
           className="lg:h-auto h-auto my-[5vh] ml-[10vw] w-4/6 lg:w-5/6  mb-5"
         />
-        {/* <img
-          src="/Assets/Images/ContactImage.svg"
-          alt=""
-          className="lg:h-auto h-auto my-[5vh] ml-[10vw] w-4/6 lg:w-5/6  mb-5"
-        /> */}
       </div>
       <div
         className="flex lg:ml-[10vw]  container w-5/6 md:w-4/6 lg:w-1/2  flex-col "
@@ -193,7 +188,7 @@ const ContactForm = () => {
             <div className="flex">
               <div className="flex flex-col basis-[48%]">
                 <div className="form-group basis-[48%]">
-                  <label for="name">Contact Person</label>
+                  <label htmlFor="name">Contact Person</label>
                   <input
                     type="text"
                     className={
@@ -222,7 +217,7 @@ const ContactForm = () => {
               <div className="basis-[4%]"></div>
               <div className="flex flex-col basis-[48%]">
                 <div className="form-group basis-[48%]">
-                  <label for="name">School</label>
+                  <label htmlFor="name">School</label>
                   <input
                     type="text"
                     className={
@@ -252,7 +247,7 @@ const ContactForm = () => {
             <div className="flex">
               <div className="flex flex-col basis-[48%]">
                 <div className="form-group basis-[48%]">
-                  <label for="phone">Phone</label>
+                  <label htmlFor="phone">Phone</label>
                   <div className="flex basis-[48%]">
                     <PhoneInput
                       className={
@@ -283,7 +278,7 @@ const ContactForm = () => {
               <div className="basis-[4%]"></div>
               <div className="flex flex-col basis-[48%]">
                 <div className="form-group basis-[48%]">
-                  <label for="email1">Email</label>
+                  <label htmlFor="email1">Email</label>
                   <input
                     type="text"
                     className={
@@ -313,7 +308,7 @@ const ContactForm = () => {
             </div>
             <div className="flex flex-col ">
               <div className="form-group">
-                <label for="message">Your message</label>
+                <label htmlFor="message">Your message</label>
                 <textarea
                   className={
                     errorMessage

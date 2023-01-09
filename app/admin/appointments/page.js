@@ -1,12 +1,10 @@
-"use client";
 import React from "react";
-
-import ContactForm from "../../Components/Contact/ContactForm";
+import AppointmentsAdmin from "../../../Components/Appointments/AppointmentsAdmin";
 
 const Contacts = () => {
   return (
     <div>
-      <ContactForm />
+      <AppointmentsAdmin />
     </div>
   );
 };

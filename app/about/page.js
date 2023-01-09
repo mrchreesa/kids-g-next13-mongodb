@@ -25,7 +25,6 @@ const About = () => {
         <title>Kids Galaxy</title>
         <link href="/static/styles.css" rel="stylesheet" />
       </Head>
-      <Navbar />
       <ReactFullpage
         navigation
         pluginWrapper={pluginWrapper}
