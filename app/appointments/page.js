@@ -2,7 +2,7 @@ import React from "react";
 import AppointmentsPage from "../../Components/Contact/AppointmentsPage";
 
 const getAvailableSlots = async () => {
-  const res = await fetch("http://localhost:3000/api/availabilityList");
+  const res = await fetch("/api/availabilityList");
   if (!res.ok) {
     console.log(res);
     // throw new Error("Failed to fetch data ");

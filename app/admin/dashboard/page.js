@@ -5,7 +5,7 @@ import Link from "next/link";
 import { decode } from "jsonwebtoken";
 
 async function getContactFormEntries() {
-  const res = await fetch("http://localhost:3000/api/admin");
+  const res = await fetch("/api/admin");
   if (!res.ok) {
     // This will activate the cloest `error.js` Error Boundary
     throw new Error("Failed to fetch data");

@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 import { decode } from "jsonwebtoken";
 
 async function getAdminList() {
-  const res = await fetch("http://localhost:3000/api/availabilityList");
+  const res = await fetch("/api/availabilityList");
   if (!res.ok) {
     console.log(res);
     // throw new Error("Failed to fetch data ");
