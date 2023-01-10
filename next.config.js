@@ -13,7 +13,9 @@ const nextConfig = {
   experimental: {
     appDir: true,
     enableUndici: true,
-    serverComponentsExternalPackages: ["@acme/ui"],
+  },
+  env: {
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
   },
 };
 
