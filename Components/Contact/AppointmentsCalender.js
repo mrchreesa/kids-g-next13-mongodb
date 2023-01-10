@@ -44,7 +44,7 @@ export default function AppointmentsCalender({ data }) {
 
   // Data sctructuring
   let allSlotsFromAdmin = [];
-  data.forEach((item, index) => {
+  data?.forEach((item, index) => {
     allSlotsFromAdmin.push({
       username: item.username,
       slots: item.availability,
