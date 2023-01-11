@@ -5,7 +5,7 @@ import Link from "next/link";
 import { decode } from "jsonwebtoken";
 
 async function getContactFormEntries() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin`);
+  const res = await fetch(`${process.env.NEXT_PUBLIC_VERCEL_URL}/api/admin`);
   if (!res.ok) {
     // This will activate the cloest `error.js` Error Boundary
     throw new Error("Failed to fetch data");

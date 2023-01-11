@@ -129,11 +129,11 @@ const AppointmentsModal = ({
     ) {
       setLoading(true);
       const req1 = axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/api/unverified`,
+        `${process.env.NEXT_PUBLIC_VERCEL_URL}/api/api/unverified`,
         data
       );
       const req2 = axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/api/emailConfirm`,
+        `${process.env.NEXT_PUBLIC_VERCEL_URL}/api/api/emailConfirm`,
         {
           data,
         }

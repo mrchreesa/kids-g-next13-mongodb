@@ -5,7 +5,7 @@ import { decode } from "jsonwebtoken";
 
 async function getAdminList() {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/availabilityList`
+    `${process.env.NEXT_PUBLIC_VERCEL_URL}/api/availabilityList`
   );
   if (!res.ok) {
     console.log(res);

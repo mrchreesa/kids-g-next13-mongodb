@@ -127,7 +127,7 @@ const ContactForm = () => {
     ) {
       setLoading(true);
       axios
-        .post(`${process.env.NEXT_PUBLIC_API_URL}/api/api/contact`, {
+        .post(`${process.env.NEXT_PUBLIC_VERCEL_URL}/api/api/contact`, {
           name: formValues.name,
           school: formValues.school,
           phone: phone,
