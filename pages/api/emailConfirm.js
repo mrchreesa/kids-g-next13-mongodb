@@ -21,7 +21,7 @@ const handler = async (req, res) => {
     );
     try {
       await transporter.sendMail({
-        from: process.env.EMAIL,
+        from: process.env.NEXT_PUBLIC_EMAIL,
         to: data.email,
         subject: `Hello ${data.name} please verify your email by clicking the link`,
         text: "Hello",
