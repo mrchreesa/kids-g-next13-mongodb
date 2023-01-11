@@ -128,10 +128,16 @@ const AppointmentsModal = ({
       errorEmail !== true
     ) {
       setLoading(true);
-      const req1 = axios.post("/api/unverified", data);
-      const req2 = axios.post("/api/emailConfirm", {
-        data,
-      });
+      const req1 = axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/api/unverified`,
+        data
+      );
+      const req2 = axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/api/emailConfirm`,
+        {
+          data,
+        }
+      );
 
       axios
         .all([req1, req2])

@@ -127,7 +127,7 @@ const ContactForm = () => {
     ) {
       setLoading(true);
       axios
-        .post("http://localhost:3000/api/contact", {
+        .post(`${process.env.NEXT_PUBLIC_API_URL}/api/api/contact`, {
           name: formValues.name,
           school: formValues.school,
           phone: phone,
