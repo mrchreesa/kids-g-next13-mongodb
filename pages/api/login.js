@@ -1,7 +1,6 @@
 import connectDB from "../../lib/connectDB";
 import Users from "../../model/users";
 import { sign } from "jsonwebtoken";
-import axios from "axios";
 import bcrypt from "bcrypt";
 import cookie from "cookie";
 
