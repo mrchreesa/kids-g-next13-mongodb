@@ -16,7 +16,7 @@ const AppointmentsPage = () => {
   // return <div>hello {data.name}!</div>;
   //${process.env.NEXT_PUBLIC_VERCEL_URL}/
   useEffect(() => {
-    axios.get(`api/availabilityList`).then((response) => {
+    axios.get(`/api/availabilityList`).then((response) => {
       setData(response.data);
     });
   }, []);
