@@ -8,7 +8,7 @@ const AppointmentsPage = () => {
 
   useEffect(() => {
     axios
-      .get(` ${process.env.NEXT_PUBLIC_VERCEL_URL}/api/availabilityList`)
+      .get(`${process.env.NEXT_PUBLIC_VERCEL_URL}/api/availabilityList`)
       .then((response) => {
         setData(response.data);
       });
