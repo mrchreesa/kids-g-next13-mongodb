@@ -82,7 +82,10 @@ const Registration = ({ jwtDecoded, authCookie, usersList }) => {
     }
     {
       axios
-        .post(`${process.env.NEXT_PUBLIC_API_URL}/api/signup`, loginFieldValues)
+        .post(
+          `${process.env.NEXT_PUBLIC_VERCEL_URL}/api/signup`,
+          loginFieldValues
+        )
         .then((response) => {
           // const { token } = response.data;
           console.log(response);
