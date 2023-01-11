@@ -3,7 +3,7 @@ import AppointmentsPage from "../../Components/Contact/AppointmentsPage";
 // import { getData } from "../../pages/api/availabilityList";
 
 const getAvailableSlots = async () => {
-  const res = await fetch(`/api/availabilityList`);
+  const res = await fetch(`${process.env.API_URL}/api/availabilityList`);
   if (!res.ok) {
     console.log(res);
     // throw new Error("Failed to fetch data ");
