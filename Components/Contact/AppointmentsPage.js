@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import AppointmentsCalender from "../Contact/AppointmentsCalender";
 import useSWR from "swr";

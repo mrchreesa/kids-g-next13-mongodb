@@ -8,6 +8,7 @@ import { BsChatSquareDotsFill } from "react-icons/bs";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Popover, Transition } from "@headlessui/react";
+import Image from "next/image";
 
 const navigation = [
   // { name: "Home", href: "/", current: true },
@@ -34,11 +35,12 @@ export default function Navbar() {
               <div className="flex flex-1 items-center justify-center  sm:items-stretch sm:justify-start">
                 <div className="flex  items-center ml-5">
                   <Link href="/">
-                    <img
+                    <Image
                       className="md:ml-5"
                       alt="logo"
-                      src="images/Nav-Logo.png"
+                      src="/images/Nav-Logo.png"
                       width="200"
+                      height="50"
                     />
                   </Link>
                 </div>
