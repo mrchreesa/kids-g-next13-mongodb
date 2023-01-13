@@ -4,23 +4,23 @@ import { cookies } from "next/headers";
 import Link from "next/link";
 import { decode } from "jsonwebtoken";
 
-const getUsersList = async () => {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_VERCEL_URL}/api/availabilityList`
-  );
-  if (!res.ok) {
-    console.log(res);
-    // throw new Error("Failed to fetch data ");
-  }
+// const getUsersList = async () => {
+//   const res = await fetch(
+//     `/api/availabilityList`
+//   );
+//   if (!res.ok) {
+//     console.log(res);
+//     // throw new Error("Failed to fetch data ");
+//   }
 
-  return res.json();
-};
+//   return res.json();
+// };
 const SignUp = async () => {
   const cookiesList = cookies();
   const authCookie = cookiesList.get("auth");
 
   const jwtDecoded = decode(authCookie?.value);
-  const usersList = await getUsersList();
+  // const usersList = await getUsersList();
 
   return (
     <div>
@@ -28,7 +28,7 @@ const SignUp = async () => {
       <Registration
         jwtDecoded={jwtDecoded}
         authCookie={authCookie}
-        usersList={usersList}
+        // usersList={usersList}
       />{" "}
     </div>
   );

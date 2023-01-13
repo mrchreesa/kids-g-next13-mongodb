@@ -35,10 +35,7 @@ export default function LoginPage(props) {
 
     {
       axios
-        .post(
-          `${process.env.NEXT_PUBLIC_VERCEL_URL}/api/login`,
-          loginFieldValues
-        )
+        .post(`/api/login`, loginFieldValues)
         .then(function (response) {
           // const { username } = response.data;
 

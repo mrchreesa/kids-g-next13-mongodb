@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import SideBar from "../Sidebar/SideBar";
+import useSWR from "swr";
 import { useRouter } from "next/navigation";
 
 const defaultLoginFieldValues = {
@@ -10,7 +10,7 @@ const defaultLoginFieldValues = {
   password: "",
 };
 
-const Registration = ({ jwtDecoded, authCookie, usersList }) => {
+const Registration = ({ jwtDecoded, authCookie }) => {
   const [loginFieldValues, setLoginFieldValues] = useState(
     defaultLoginFieldValues
   );
@@ -24,6 +24,13 @@ const Registration = ({ jwtDecoded, authCookie, usersList }) => {
   const [helperTextPassword, setHelperTextPassword] = useState("");
 
   const [adminList, setAdminList] = useState([]);
+
+  const fetcher = (url) => fetch(url).then((res) => res.json());
+
+  const url = "/api/admin";
+  const { usersList, error, isLoading } = useSWR(url, fetcher);
+  if (error) return <div>failed to load</div>;
+  if (isLoading) return <div>loading...</div>;
 
   let newAdminList = [];
   usersList.forEach((item) =>
@@ -82,12 +89,8 @@ const Registration = ({ jwtDecoded, authCookie, usersList }) => {
     }
     {
       axios
-        .post(
-          `${process.env.NEXT_PUBLIC_VERCEL_URL}/api/signup`,
-          loginFieldValues
-        )
+        .post(`/api/signup`, loginFieldValues)
         .then((response) => {
-          // const { token } = response.data;
           console.log(response);
           if (response.status === 200) {
             router.push("/admin");
