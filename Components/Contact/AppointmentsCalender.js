@@ -9,6 +9,8 @@ import {
   isEqual,
   isSameMonth,
   isToday,
+  isBefore,
+  isAfter,
   parse,
   startOfToday,
 } from "date-fns";
@@ -23,10 +25,8 @@ export default function AppointmentsCalender({ data }) {
   let today = startOfToday();
   let [selectedDay, setSelectedDay] = useState(today);
   let [currentMonth, setCurrentMonth] = useState(format(today, "MMM-yyyy"));
-  const [availableSlots, setAvailableSlots] = useState(null);
   const [slotIndex, setSlotIndex] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
-
   let firstDayCurrentMonth = parse(currentMonth, "MMM-yyyy", new Date());
 
   // Modal
@@ -46,7 +46,12 @@ export default function AppointmentsCalender({ data }) {
       slots: item.availability,
     });
   });
-  // console.log(allSlotsFromAdmin);
+
+  let allSlots = [];
+  allSlotsFromAdmin?.forEach((slot) => {
+    allSlots.push(slot.slots);
+  });
+
   let slotsForSelectedDay = [];
 
   allSlotsFromAdmin.forEach((item, index) => {
@@ -62,6 +67,17 @@ export default function AppointmentsCalender({ data }) {
       }
     });
   });
+
+  // Merging all slots into array and formatting for comaprison
+  let mergedSlots = allSlots.flat(1);
+
+  let updatedMergedSlots = [];
+  mergedSlots.forEach((slot) => {
+    let m = moment(slot).format("DD");
+    updatedMergedSlots.push(m);
+  });
+  console.log(allSlotsFromAdmin);
+
   //Sorting slots in ascending order
   slotsForSelectedDay.sort(function (a, b) {
     var c = new Date(a.slot);
@@ -82,12 +98,6 @@ export default function AppointmentsCalender({ data }) {
 
     return false;
   });
-  console.log(uniqueSlots);
-  const slotDate = moment(selectedDay).format("dddd, Do MMMM YYYY");
-
-  useEffect(() => {
-    setAvailableSlots(null);
-  }, [selectedDay]);
 
   //Calendar funtionality
   let days = eachDayOfInterval({
@@ -106,9 +116,6 @@ export default function AppointmentsCalender({ data }) {
   }
 
   //Separation of the Date and Time for UI
-  const dateToDate = (time) => {
-    return moment(time).format("Do MMMM YYYY");
-  };
   const dateToTime = (time) => {
     return moment(time).format("HH:mm");
   };
@@ -163,29 +170,54 @@ export default function AppointmentsCalender({ data }) {
                     )}
                   >
                     <button
+                      disabled={isBefore(day, today)}
+                      id="btn"
                       type="button"
                       onClick={() => {
                         setSelectedDay(day);
                       }}
                       className={classNames(
+                        updatedMergedSlots.includes(moment(day).format("DD")) &&
+                          !isToday(day) &&
+                          "text-green",
                         isEqual(day, selectedDay) && "text-white",
+
+                        isBefore(day, today) &&
+                          "text-gray-300 hover:bg-white cursor-default",
+                        isEqual(day, selectedDay) &&
+                          isBefore(day, today) &&
+                          !isToday(day) &&
+                          "bg-gray-50",
                         !isEqual(day, selectedDay) &&
                           isToday(day) &&
-                          "text-red-500",
+                          "text-sky-500",
                         !isEqual(day, selectedDay) &&
                           !isToday(day) &&
                           isSameMonth(day, firstDayCurrentMonth) &&
                           "text-gray-900",
+                        isEqual(day, selectedDay) &&
+                          !isToday(day) &&
+                          isSameMonth(day, firstDayCurrentMonth) &&
+                          updatedMergedSlots.includes(
+                            moment(day).format("DD")
+                          ) &&
+                          "text-gray-50",
                         !isEqual(day, selectedDay) &&
                           !isToday(day) &&
                           !isSameMonth(day, firstDayCurrentMonth) &&
                           "text-gray-400",
                         isEqual(day, selectedDay) &&
                           isToday(day) &&
-                          "bg-red-500",
+                          "bg-sky-500",
                         isEqual(day, selectedDay) &&
                           !isToday(day) &&
                           "bg-gray-900",
+                        isEqual(day, selectedDay) &&
+                          !isToday(day) &&
+                          updatedMergedSlots.includes(
+                            moment(day).format("DD")
+                          ) &&
+                          "bg-green",
                         !isEqual(day, selectedDay) && "hover:bg-gray-200",
                         (isEqual(day, selectedDay) || isToday(day)) &&
                           "font-semibold",
@@ -236,7 +268,7 @@ export default function AppointmentsCalender({ data }) {
                   ))
                 ) : (
                   <div
-                    className="flex justify-center h-screen w-[80vw] align-center"
+                    className="flex justify-center h-screen align-center"
                     role="status"
                   >
                     <svg

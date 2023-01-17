@@ -8,7 +8,7 @@ const AppointmentsPage = () => {
 
   const url = "/api/availabilityList";
   const { data, error, isLoading } = useSWR(url, fetcher);
-  console.log(data);
+  // console.log(data);
   if (error) return <div>failed to load</div>;
   if (isLoading) return <div>loading...</div>;
 

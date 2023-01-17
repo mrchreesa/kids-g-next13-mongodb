@@ -12,6 +12,7 @@ import {
   isToday,
   parse,
   parseISO,
+  isBefore,
   startOfToday,
 } from "date-fns";
 import { Fragment, useState, useEffect } from "react";
@@ -93,15 +94,17 @@ export default function AvailabilityAdmin({ adminList, jwtDecoded }) {
 
   useEffect(() => {
     setLoading(true);
-
     getAvailableSlots();
   }, []);
+
+  let updatedSlots;
 
   const getAvailableSlots = () => {
     axios
       .get("/api/availability")
       .then((response) => {
-        setAvailableSlots(response.data[0].availability);
+        let slots = response.data[0].availability;
+        setAvailableSlots(slots);
         setLoading(false);
       })
       .catch((error) => {
@@ -109,7 +112,20 @@ export default function AvailabilityAdmin({ adminList, jwtDecoded }) {
       });
   };
 
-  // console.log(availableSlots);
+  let updatedAvailableSlots = availableSlots;
+  updatedAvailableSlots?.forEach((slot) => {
+    if (isBefore(parseISO(slot), today)) {
+      axios
+        .patch("/api/availability", slot)
+        .then((response) => {
+          console.log("slot deleted successfully" + response);
+          setAvailableSlots(updatedAvailableSlots);
+        })
+        .catch((error) => {
+          console.log("slot didn't delete" + error.message);
+        });
+    }
+  });
 
   const setAvailability = (time) => {
     let dateTime = moment(selectedDay).add(moment.duration(time));
@@ -269,7 +285,7 @@ export default function AvailabilityAdmin({ adminList, jwtDecoded }) {
           </div>
         </div>
       </div>
-      <div className="flex ml-64 h-max flex-col  pt-10 ">
+      <div className="flex ml-64  h-80 flex-col  pt-10 ">
         <div className="mx-4">
           <p className="text-center mb-5  font-semibold text-gray-900">
             Available slots
