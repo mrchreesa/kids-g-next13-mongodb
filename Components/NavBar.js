@@ -33,9 +33,10 @@ export default function Navbar() {
           <div className="mx-auto  px-2 sm:px-6 lg:px-8 max-w-[1300px]">
             <div className="relative flex h-20 items-center justify-between ">
               <div className="flex flex-1 items-center justify-center  sm:items-stretch sm:justify-start">
-                <div className="flex  items-center ml-5">
+                <div className="flex items-center ml-5">
                   <Link href="/">
                     <Image
+                      priority
                       className="md:ml-5"
                       alt="logo"
                       src="/images/Nav-Logo.png"

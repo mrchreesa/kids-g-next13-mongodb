@@ -10,12 +10,12 @@ import {
   isSameMonth,
   isToday,
   isBefore,
-  isAfter,
   parse,
   startOfToday,
 } from "date-fns";
-import { Fragment, useState, useEffect } from "react";
+import { Fragment, useState } from "react";
 import AppointmentsModal from "./AppointmentsModal";
+import RequestAppointmentsModal from "./RequestAppointmentsModal";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -27,6 +27,8 @@ export default function AppointmentsCalender({ data }) {
   let [currentMonth, setCurrentMonth] = useState(format(today, "MMM-yyyy"));
   const [slotIndex, setSlotIndex] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [requestModalOpen, setRequestModalOpen] = useState(false);
+
   let firstDayCurrentMonth = parse(currentMonth, "MMM-yyyy", new Date());
 
   // Modal
@@ -36,6 +38,15 @@ export default function AppointmentsCalender({ data }) {
   };
   const isModalClosed = () => {
     setModalOpen(false);
+  };
+
+  // Request Modal
+  const isRequestModalOpen = (i) => {
+    setRequestModalOpen(true);
+    setSlotIndex(i);
+  };
+  const isRequestModalClosed = () => {
+    setRequestModalOpen(false);
   };
 
   // Data sctructuring
@@ -73,10 +84,9 @@ export default function AppointmentsCalender({ data }) {
 
   let updatedMergedSlots = [];
   mergedSlots.forEach((slot) => {
-    let m = moment(slot).format("DD");
+    let m = moment(slot).format("DD MM");
     updatedMergedSlots.push(m);
   });
-  console.log(allSlotsFromAdmin);
 
   //Sorting slots in ascending order
   slotsForSelectedDay.sort(function (a, b) {
@@ -177,7 +187,9 @@ export default function AppointmentsCalender({ data }) {
                         setSelectedDay(day);
                       }}
                       className={classNames(
-                        updatedMergedSlots.includes(moment(day).format("DD")) &&
+                        updatedMergedSlots.includes(
+                          moment(day).format("DD MM")
+                        ) &&
                           !isToday(day) &&
                           "text-green",
                         isEqual(day, selectedDay) && "text-white",
@@ -229,7 +241,7 @@ export default function AppointmentsCalender({ data }) {
                       </time>
                     </button>
 
-                    <div className="w-1 h-1 mx-auto mt-1">
+                    {/* <div className="w-1 h-1 mx-auto mt-1">
                       {allSlotsFromAdmin.map((slot, index) =>
                         slot.startDatetime ===
                         moment(day).format("dddd, Do MMMM YYYY") ? (
@@ -239,10 +251,16 @@ export default function AppointmentsCalender({ data }) {
                           ></div>
                         ) : null
                       )}
-                    </div>
+                    </div> */}
                   </div>
                 ))}
               </div>
+              <button
+                onClick={isRequestModalOpen}
+                className="w-full px-4 py-2 border m-1 mt-6  group rounded-xl focus-within:bg-gray-100 hover:bg-gray-100"
+              >
+                Request an appointment
+              </button>
             </div>
             <section className="mt-12 md:mt-0 md:pl-12">
               <h2 className="font-semibold text-gray-900">
@@ -299,6 +317,12 @@ export default function AppointmentsCalender({ data }) {
       <AppointmentsModal
         isModalClosed={isModalClosed}
         modalOpen={modalOpen}
+        uniqueSlots={uniqueSlots}
+        slotIndex={slotIndex}
+      />
+      <RequestAppointmentsModal
+        isRequestModalClosed={isRequestModalClosed}
+        requestModalOpen={requestModalOpen}
         uniqueSlots={uniqueSlots}
         slotIndex={slotIndex}
       />

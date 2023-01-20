@@ -50,13 +50,16 @@ const ContactForm = () => {
   const validateInputs = () => {
     const nameValue = formValues.name.trim();
     const emailValue = formValues.email.trim();
+    let formIsValid = true;
 
     if (formValues.name === "") {
       setErrorMessageName("Name is required");
       setErrorName(true);
+      formIsValid = false;
     } else if (!isValidName(nameValue)) {
       setErrorMessageName("Name should be 3-26 characters");
       setErrorName(true);
+      formIsValid = false;
     } else {
       setErrorName(false);
       setFormName(formValues.name);
@@ -64,6 +67,7 @@ const ContactForm = () => {
     if (formValues.school === "") {
       setErrorMessageSchool("School is required");
       setErrorSchool(true);
+      formIsValid = false;
     } else {
       setFormSchool(formValues.school);
       setErrorSchool(false);
@@ -71,9 +75,11 @@ const ContactForm = () => {
     if (phone === "") {
       setErrorMessagePhone("Phone number is required");
       setErrorPhone(true);
+      formIsValid = false;
     } else if (phone.length < 10) {
       setErrorMessagePhone("Please provide a valid phone number");
       setErrorPhone(true);
+      formIsValid = false;
     } else {
       setErrorPhone(false);
       setFormPhone(phone);
@@ -81,9 +87,11 @@ const ContactForm = () => {
     if (formValues.email === "") {
       setErrorMessageEmail("Email is required");
       setErrorEmail(true);
+      formIsValid = false;
     } else if (!isValidEmail(emailValue)) {
       setErrorMessageEmail("Provide a valid email address");
       setErrorEmail(true);
+      formIsValid = false;
     } else {
       setErrorEmail(false);
       setFormEmail(formValues.email);
@@ -127,7 +135,7 @@ const ContactForm = () => {
     ) {
       setLoading(true);
       axios
-        .post(`${process.env.NEXT_PUBLIC_VERCEL_URL}/api/api/contact`, {
+        .post(`$/api/api/contact`, {
           name: formValues.name,
           school: formValues.school,
           phone: phone,
