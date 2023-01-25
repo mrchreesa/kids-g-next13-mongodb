@@ -13,10 +13,8 @@ const handler = async (req, res) => {
   if (req.method === "POST") {
     const decoded = verify(token, process.env.ACCESS_TOKEN_SECRET);
     if (decoded.username === userName) {
-      // console.log(slot);
       try {
         userObject = await Users.findOne({ username: adminName });
-        // console.log(userObject);
       } catch (e) {
         console.log(e);
       }
@@ -24,24 +22,19 @@ const handler = async (req, res) => {
         const slotObject = userObject.unverifiedAppointments.find(
           ({ name }) => name === userName
         );
-        console.log(slotObject);
         try {
           await Users.findOneAndUpdate(
             {
               username: adminName,
             },
             {
-              appointments: slotObject,
-              // $pull: { availability: slot },
-              // $pull: {
-              //   unverifiedAppointments: { name: userName },
-              // },
+              $addToSet: { appointments: slotObject },
             },
             {
+              upsert: true,
               new: true,
             }
           );
-          // res.status(200).send({ message: "Success" });
         } catch (error) {
           console.log(error);
           res.status(400).send({ message: "push appointment failed" });
@@ -52,11 +45,7 @@ const handler = async (req, res) => {
               username: adminName,
             },
             {
-              // $push: { appointments: slotObject },
               $pull: { availability: slot },
-              // $pull: {
-              //   unverifiedAppointments: { name: userName },
-              // },
             },
             {
               new: true,
@@ -72,8 +61,6 @@ const handler = async (req, res) => {
               username: adminName,
             },
             {
-              // $push: { appointments: slotObject },
-              // $pull: { availability: slot },
               $pull: {
                 unverifiedAppointments: { name: userName },
               },

@@ -117,7 +117,6 @@ const AppointmentsModal = ({
       school: formValues.school,
       phone: phone,
       email: formValues.email,
-      verified: false,
     };
     e.preventDefault();
     validateInputs();
@@ -128,8 +127,8 @@ const AppointmentsModal = ({
       errorEmail !== true
     ) {
       setLoading(true);
-      const req1 = axios.post(`$/api/unverified`, data);
-      const req2 = axios.post(`$/api/emailConfirm`, {
+      const req1 = axios.post(`/api/unverified`, data);
+      const req2 = axios.post(`/api/emailConfirm`, {
         data,
       });
 

@@ -1,4 +1,5 @@
 import connectDB from "../../lib/connectDB";
+
 import RequestedAppointments from "../../model/requestedAppointments";
 
 const handler = async (req, res) => {
@@ -13,7 +14,7 @@ const handler = async (req, res) => {
         email: data.email,
       });
 
-      if (!requestEmail) {
+      if (requestEmail.length === 0) {
         const newRequest = await RequestedAppointments.create(data);
         newRequest
           .validate()

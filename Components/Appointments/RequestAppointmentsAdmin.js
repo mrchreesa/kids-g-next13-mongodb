@@ -1,33 +1,56 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import useSWR from "swr";
+import moment from "moment";
 import axios from "axios";
 
-const RequestAppointmentsAdmin = () => {
-  const [data, setData] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+const RequestAppointmentsAdmin = ({ username }) => {
+  const [loading, setLoading] = useState(false);
+  const fetcher = (url) => fetch(url).then((res) => res.json());
 
-  useEffect(() => {
-    setIsLoading(true);
+  const url = "/api/requests";
+  const { data, error } = useSWR(url, fetcher);
+  if (error) return <div>failed to load</div>;
+
+  const assingAppointment = (slot) => {
+    let data = { ...slot, username: username };
+    setLoading(true);
     axios
-      .get("/api/requests")
+      .post(url, data)
       .then((res) => {
-        setData(res.data);
-        setIsLoading(false);
+        if (res.status === 201) {
+          console.log("appointment added");
+          setLoading(false);
+        } else {
+          setLoading(false);
+        }
       })
-      .catch((err) => console.log("fetch failed" + err));
-  }, []);
+      .catch((err) => console.log(err));
+  };
 
   return (
     <>
       <div className="flex flex-wrap ml-64">
-        {!isLoading ? (
+        {data ? (
           data?.map((item) => (
             <div key={item._id} className="flex flex-col p-3 m-2 border">
-              <h2>{item.date}</h2>
+              <h2 className="bold border-b font-semibold mb-2">
+                {moment(item.date).format("dddd, MMMM Do YYYY, h:mm:ss a")}
+              </h2>
               <h2>{item.name}</h2>
               <h3>{item.school}</h3>
               <p>{item.phone}</p>
               <p>{item.email}</p>
+              <button
+                onClick={() => assingAppointment(item)}
+                className="w-full px-4 py-2 border m-1 mt-6  group rounded-xl focus-within:bg-gray-100 hover:bg-gray-100"
+              >
+                {loading ? (
+                  <div className="loader ease-linear rounded-full border-4 border-t-4 border-white h-6 w-6"></div>
+                ) : (
+                  " Assign Appointment"
+                )}
+              </button>
             </div>
           ))
         ) : (

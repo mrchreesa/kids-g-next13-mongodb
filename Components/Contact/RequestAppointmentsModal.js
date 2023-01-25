@@ -152,6 +152,9 @@ const RequestAppointmentsModal = ({
             setFormValues(initialValues);
             setPhone("");
             setDate("");
+            alert(
+              "Thank you for submitting a request with us! You will receive a confirmation email!"
+            );
           } else if (response.status === 202) {
             alert(
               "You have already submitted a request with us and we will get back to you soon!"

@@ -135,7 +135,7 @@ const ContactForm = () => {
     ) {
       setLoading(true);
       axios
-        .post(`$/api/api/contact`, {
+        .post(`/api/contact`, {
           name: formValues.name,
           school: formValues.school,
           phone: phone,
