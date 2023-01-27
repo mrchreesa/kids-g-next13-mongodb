@@ -3,8 +3,8 @@ import Modal from "react-modal";
 import PhoneInput from "react-phone-input-2";
 import moment from "moment";
 import axios from "axios";
-
 import "react-phone-input-2/lib/style.css";
+import DateTimePicker from "./DateTimePicker";
 
 const RequestAppointmentsModal = ({
   requestModalOpen,
@@ -13,16 +13,15 @@ const RequestAppointmentsModal = ({
   const initialValues = { name: "", school: "", email: "" };
 
   const [phone, setPhone] = useState("");
-  const [date, setDate] = useState("");
+  const [date, setDate] = useState(new Date());
   const [formValues, setFormValues] = useState(initialValues);
   const [isOpenModal, setIsOpenModal] = useState(true);
   const [loading, setLoading] = useState(false);
-
-  const [formName, setFormName] = useState("");
-  const [formSchool, setFormSchool] = useState("");
-  const [formPhone, setFormPhone] = useState("");
-  const [formEmail, setFormEmail] = useState("");
-  const [slotFormDateTime, setFormSlotDateTime] = useState("");
+  // const [formName, setFormName] = useState("");
+  // const [formSchool, setFormSchool] = useState("");
+  // const [formPhone, setFormPhone] = useState("");
+  // const [formEmail, setFormEmail] = useState("");
+  // const [slotFormDateTime, setFormSlotDateTime] = useState("");
 
   const [errorMessageName, setErrorMessageName] = useState("Error");
   const [errorMessageSchool, setErrorMessageSchool] = useState("Error");
@@ -37,7 +36,7 @@ const RequestAppointmentsModal = ({
   const [errorSlotDateTime, setErrorSlotDateTime] = useState(false);
 
   const today = new Date();
-  const todayFormat = moment(today).format().toString().split(":")[0];
+  // const todayFormat = moment(today).format().toString().split(":")[0];
 
   const isValidEmail = (email) => {
     const re =
@@ -178,9 +177,9 @@ const RequestAppointmentsModal = ({
     const { value, name } = e.target;
     setFormValues({ ...formValues, [name]: value });
   };
-  const handleDateChange = (e) => {
-    e.preventDefault();
-    const date = e.target.value;
+  const handleDateChange = (date) => {
+    // e.preventDefault();
+    // const date = e.target.value;
     setDate(date);
   };
 
@@ -198,7 +197,7 @@ const RequestAppointmentsModal = ({
       onRequestClose={isRequestModalClosed}
       ariaHideApp={false}
     >
-      <div className=" w-full  lg:w-5/6">
+      <div className=" w-full  lg:w-5/6 ">
         {" "}
         <form id="contact-form" onSubmit={handleSubmit} method="POST">
           <h2 className="text-[3vh] text-center text-merri mb-4">
@@ -207,10 +206,10 @@ const RequestAppointmentsModal = ({
 
           <div className="flex">
             <div className="flex flex-col basis-[48%]">
-              <div className="form-group basis-[48%]">
-                <label htmlFor="name">Date</label>
-
-                <input
+              <div className="form-group basis-[48%] relative">
+                {/* <label htmlFor="name">Date</label> */}
+                <DateTimePicker date={date} handleDateChange={handleDateChange} />
+                {/* <input
                   type="datetime-local"
                   min={todayFormat + ":00"}
                   value={date}
@@ -220,7 +219,7 @@ const RequestAppointmentsModal = ({
                       ? "text-base bg-white py-3.5 px-4 w-full h-10 border border-red-500 outline-0 transition-all"
                       : "text-base bg-white py-3.5 px-4 w-full h-10 border border-blue outline-0 transition-all"
                   }
-                />
+                /> */}
                 <div
                   className={
                     errorSlotDateTime

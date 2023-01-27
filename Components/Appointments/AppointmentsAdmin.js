@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import moment from "moment";
 
 const AppointmentsAdmin = ({ username }) => {
   const [userAppointments, setUserAppointments] = useState("");
@@ -20,6 +21,10 @@ const AppointmentsAdmin = ({ username }) => {
   useEffect(() => {
     getUserData();
   }, []);
+
+  const dateFormat = (date) => {
+    return moment(date).format("dddd, MMMM Do YYYY, h:mm:ss a");
+  };
   // console.log(userAppointments);
   return (
     <div className="flex flex-wrap ml-64">
@@ -27,7 +32,11 @@ const AppointmentsAdmin = ({ username }) => {
         userAppointments?.map((item, i) => (
           <div key={i} className="flex flex-col p-3 m-2 border">
             <h2>{item.name}</h2>
-            <h2>{item.slot?.slot && item.date}</h2>
+            <h2 className="font-semibold">
+              {dateFormat(item.slot?.slot)
+                ? dateFormat(item.slot?.slot)
+                : dateFormat(item.date)}
+            </h2>
 
             <h3>{item.school}</h3>
             <p>{item.phone}</p>
