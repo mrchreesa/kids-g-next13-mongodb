@@ -207,19 +207,11 @@ const RequestAppointmentsModal = ({
           <div className="flex">
             <div className="flex flex-col basis-[48%]">
               <div className="form-group basis-[48%] relative">
-                {/* <label htmlFor="name">Date</label> */}
-                <DateTimePicker date={date} handleDateChange={handleDateChange} />
-                {/* <input
-                  type="datetime-local"
-                  min={todayFormat + ":00"}
-                  value={date}
-                  onChange={handleDateChange}
-                  className={
-                    errorSlotDateTime
-                      ? "text-base bg-white py-3.5 px-4 w-full h-10 border border-red-500 outline-0 transition-all"
-                      : "text-base bg-white py-3.5 px-4 w-full h-10 border border-blue outline-0 transition-all"
-                  }
-                /> */}
+                <DateTimePicker
+                  date={date}
+                  handleDateChange={handleDateChange}
+                />
+
                 <div
                   className={
                     errorSlotDateTime

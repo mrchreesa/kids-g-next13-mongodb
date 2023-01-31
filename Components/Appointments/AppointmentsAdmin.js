@@ -5,11 +5,13 @@ import moment from "moment";
 
 const AppointmentsAdmin = ({ username }) => {
   const [userAppointments, setUserAppointments] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const getUserData = () => {
+    setLoading(true);
     axios.get("/api/users").then((response) => {
       let users = response.data;
-
+      setLoading(false);
       users.map((item) => {
         if (item.username === username) {
           let { appointments } = item;
@@ -21,17 +23,38 @@ const AppointmentsAdmin = ({ username }) => {
   useEffect(() => {
     getUserData();
   }, []);
-
+  const handleDelete = (slot) => {
+    setLoading(true);
+    axios
+      .patch("/api/appointment", slot)
+      .then((response) => {
+        console.log(response);
+        getUserData();
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log("slot didn't delete " + error.message);
+      });
+  };
   const dateFormat = (date) => {
     return moment(date).format("dddd, MMMM Do YYYY, h:mm:ss a");
   };
   // console.log(userAppointments);
   return (
     <div className="flex flex-wrap ml-64">
-      {userAppointments ? (
+      {userAppointments && !loading ? (
         userAppointments?.map((item, i) => (
           <div key={i} className="flex flex-col p-3 m-2 border">
-            <h2>{item.name}</h2>
+            <div className="flex justify-around">
+              <h2>{item.name}</h2>
+              <div className="grow"></div>
+              <button
+                onClick={() => handleDelete(item)}
+                className="border py-1 px-2 rounded-xl focus-within:bg-gray-100 hover:bg-gray-100"
+              >
+                ✗
+              </button>
+            </div>
             <h2 className="font-semibold">
               {dateFormat(item.slot?.slot)
                 ? dateFormat(item.slot?.slot)

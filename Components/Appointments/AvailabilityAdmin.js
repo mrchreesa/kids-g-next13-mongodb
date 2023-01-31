@@ -17,6 +17,9 @@ import {
 } from "date-fns";
 import { Fragment, useState, useEffect } from "react";
 import axios from "axios";
+import { AiOutlineLeft } from "react-icons/ai";
+import { AiOutlineRight } from "react-icons/ai";
+import TimePicker from "./TimePicker";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -42,6 +45,11 @@ export default function AvailabilityAdmin({ adminList, jwtDecoded }) {
   //Format the time
   let startTime = moment(x.openTime, "HH:mm");
 
+  function formatTime(timeString) {
+    const [hourString, minute] = timeString.split(":");
+    const hour = +hourString % 24;
+    return (hour % 12 || 12) + ":" + minute + (hour < 12 ? "AM" : "PM");
+  }
   //Format the end time and the next day to it
   let endTime = moment(x.closeTime, "HH:mm");
 
@@ -85,7 +93,7 @@ export default function AvailabilityAdmin({ adminList, jwtDecoded }) {
     getAvailableSlots();
   }, []);
 
-  let updatedSlots;
+  // let updatedSlots;
 
   const getAvailableSlots = () => {
     axios
@@ -140,9 +148,18 @@ export default function AvailabilityAdmin({ adminList, jwtDecoded }) {
       });
   };
 
+  // Merging all slots into array and formatting for comaprison
+  let mergedSlots = allSlots.flat(1);
+
+  let updatedMergedSlots = [];
+  mergedSlots.forEach((slot) => {
+    let m = moment(slot).format("DD MM");
+    updatedMergedSlots.push(m);
+  });
+
   //Handling custom availibility
-  const handleCustomSlotsInput = (e) => {
-    setCustomInput(e.target.value);
+  const handleCustomSlotsInput = (time) => {
+    setCustomInput(time);
   };
   const handleCustomSlotsSubmit = () => {
     setAvailability(customInput);
@@ -163,8 +180,8 @@ export default function AvailabilityAdmin({ adminList, jwtDecoded }) {
                   className="-my-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500"
                 >
                   <span className="sr-only">Previous month</span>
-                  <div className="w-5 h-5" aria-hidden="true">
-                    left
+                  <div className="w-7 h-7" aria-hidden="true">
+                    <AiOutlineLeft />
                   </div>
                 </button>
                 <button
@@ -173,8 +190,8 @@ export default function AvailabilityAdmin({ adminList, jwtDecoded }) {
                   className="-my-1.5 -mr-1.5 ml-2 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500"
                 >
                   <span className="sr-only">Next month</span>
-                  <div className="w-5 h-5" aria-hidden="true">
-                    right
+                  <div className="w-7 h-7" aria-hidden="true">
+                    <AiOutlineRight />
                   </div>
                 </button>
               </div>
@@ -198,26 +215,53 @@ export default function AvailabilityAdmin({ adminList, jwtDecoded }) {
                   >
                     <button
                       type="button"
-                      onClick={() => setSelectedDay(day)}
+                      onClick={() => {
+                        setSelectedDay(day);
+                      }}
                       className={classNames(
+                        updatedMergedSlots.includes(
+                          moment(day).format("DD MM")
+                        ) &&
+                          !isToday(day) &&
+                          "text-green",
                         isEqual(day, selectedDay) && "text-white",
+
+                        isBefore(day, today) &&
+                          "text-gray-300 hover:bg-white cursor-default",
+                        isEqual(day, selectedDay) &&
+                          isBefore(day, today) &&
+                          !isToday(day) &&
+                          "bg-gray-50",
                         !isEqual(day, selectedDay) &&
                           isToday(day) &&
-                          "text-red-500",
+                          "text-sky-500",
                         !isEqual(day, selectedDay) &&
                           !isToday(day) &&
                           isSameMonth(day, firstDayCurrentMonth) &&
                           "text-gray-900",
+                        isEqual(day, selectedDay) &&
+                          !isToday(day) &&
+                          isSameMonth(day, firstDayCurrentMonth) &&
+                          updatedMergedSlots.includes(
+                            moment(day).format("DD")
+                          ) &&
+                          "text-gray-50",
                         !isEqual(day, selectedDay) &&
                           !isToday(day) &&
                           !isSameMonth(day, firstDayCurrentMonth) &&
                           "text-gray-400",
                         isEqual(day, selectedDay) &&
                           isToday(day) &&
-                          "bg-red-500",
+                          "bg-sky-500",
                         isEqual(day, selectedDay) &&
                           !isToday(day) &&
                           "bg-gray-900",
+                        isEqual(day, selectedDay) &&
+                          !isToday(day) &&
+                          updatedMergedSlots.includes(
+                            moment(day).format("DD")
+                          ) &&
+                          "bg-green",
                         !isEqual(day, selectedDay) && "hover:bg-gray-200",
                         (isEqual(day, selectedDay) || isToday(day)) &&
                           "font-semibold",
@@ -247,23 +291,26 @@ export default function AvailabilityAdmin({ adminList, jwtDecoded }) {
                       className="w-[10vw] px-4 py-2 border m-1  group rounded-xl focus-within:bg-gray-100 hover:bg-gray-100"
                     >
                       <div className="flex-auto">
-                        <p className="mt-0.5">{slotTime}</p>
+                        <p className="mt-0.5">{formatTime(slotTime)}</p>
                       </div>
                     </button>
                   </div>
                 ))}
-                <label className="ml-4" htmlFor="appt-time">
-                  Choose custom time slot:{" "}
-                </label>
-                <input
+                <div>
+                  <TimePicker
+                    className="my-4 "
+                    customInput={customInput}
+                    handleCustomSlotsInput={handleCustomSlotsInput}
+                  />
+                  {/* <input
                   id="appt-time"
                   placeholder="custom"
                   className="w-[21vw] px-4 py-2 border m-1  group rounded-xl focus-within:bg-gray-100 hover:bg-gray-100"
                   type="time"
                   format="g:ia"
                   onChange={handleCustomSlotsInput}
-                />
-
+                /> */}
+                </div>
                 <button
                   onClick={handleCustomSlotsSubmit}
                   className="w-[10vw] px-4 py-2 border m-1   group rounded-xl focus-within:bg-gray-100 hover:bg-gray-100"
@@ -290,7 +337,7 @@ export default function AvailabilityAdmin({ adminList, jwtDecoded }) {
                 >
                   <p className=" text-gray-900">{dateToDate(slot)}</p>
                   <p className="font-semibold text-gray-900">
-                    {dateToTime(slot)}
+                    {formatTime(dateToTime(slot))}
                   </p>
                 </button>
               ))}
