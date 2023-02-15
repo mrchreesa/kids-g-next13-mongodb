@@ -70,7 +70,7 @@ const SideBar = ({ username }) => {
                   </svg>
                 </span>
                 <span className="ml-2 text-sm tracking-wide truncate">
-                  Dashboard
+                  Enquiries
                 </span>
               </Link>
             </li>

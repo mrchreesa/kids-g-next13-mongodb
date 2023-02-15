@@ -296,27 +296,19 @@ export default function AvailabilityAdmin({ adminList, jwtDecoded }) {
                     </button>
                   </div>
                 ))}
-                <div>
+                {/* <div>
                   <TimePicker
                     className="my-4 "
                     customInput={customInput}
                     handleCustomSlotsInput={handleCustomSlotsInput}
                   />
-                  {/* <input
-                  id="appt-time"
-                  placeholder="custom"
-                  className="w-[21vw] px-4 py-2 border m-1  group rounded-xl focus-within:bg-gray-100 hover:bg-gray-100"
-                  type="time"
-                  format="g:ia"
-                  onChange={handleCustomSlotsInput}
-                /> */}
                 </div>
                 <button
                   onClick={handleCustomSlotsSubmit}
                   className="w-[10vw] px-4 py-2 border m-1   group rounded-xl focus-within:bg-gray-100 hover:bg-gray-100"
                 >
                   Submit
-                </button>
+                </button> */}
               </div>
             </section>
           </div>

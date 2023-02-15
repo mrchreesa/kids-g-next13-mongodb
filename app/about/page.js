@@ -21,10 +21,6 @@ const About = () => {
 
   return (
     <div className="App">
-      <Head>
-        <title>Kids Galaxy</title>
-        <link href="/static/styles.css" rel="stylesheet" />
-      </Head>
       <ReactFullpage
         navigation
         pluginWrapper={pluginWrapper}
@@ -44,23 +40,18 @@ const About = () => {
             return (
               <>
                 <ReactFullpage.Wrapper>
-                  <div className="section section0 fp-auto-height-responsive">
+                  <div className="section section0 fp-auto-height-responsive items-center">
                     <MainPage />
                   </div>
-                  <div className="section section1 fp-auto-height-responsive">
+                  <div className="section section1 fp-auto-height-responsive items-center">
                     <MainPage />
                   </div>
-                  <div className="section section2 fp-auto-height-responsive">
+                  <div className="section section2 fp-auto-height-responsive items-center">
                     <MainPage />
                   </div>
-                  <div className="section section3 fp-auto-height-responsive">
+                  <div className="section section3 fp-auto-height-responsive items-center">
                     <MainPage />
                   </div>
-                  {/* {fullpages.map(({ text }) => (
-                    <div key={text} className="section">
-                      {text}
-                    </div>
-                  ))} */}
                 </ReactFullpage.Wrapper>
               </>
             );
